@@ -1,0 +1,7 @@
+# ============== Protocol messages ==============
+
+# heartbeat
+
+
+# authenticate
+
