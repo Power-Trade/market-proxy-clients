@@ -35,7 +35,7 @@ async def run(cfg):
     auth_future = mh.watch_tag(auth_tag)  # Set up a future waiting for a response with this tag
     await client.authenticate(auth_tag, cfg["api_key"], cfg["private_key"])  # Send auth request
     auth_resp: server.ServerMessage = await async_result(auth_future)  # Wait for auth result arrive
-
+    assert(auth_resp.type() == server.MessageType.command_response)  # Validate response message type
     # Check auth was successful.
     if auth_resp.body()["error_code"] != "0":
         logging.error("auth failed\n%s", auth_resp)
@@ -45,8 +45,9 @@ async def run(cfg):
     # Auth success, register for rfqs
     rfq_tag = "rfq"
     rfq_future = mh.watch_tag(rfq_tag)
-    await client.register_for_rfqs("rfq_tag")
+    await client.register_for_rfqs(rfq_tag)
     rfq_resp: server.ServerMessage = await async_result(rfq_future)  # Wait for rfq result arrive
+    assert (rfq_resp.type() == server.MessageType.command_response)  # Validate response message type
 
     if rfq_resp.body()["error_code"] != "0":
         logging.error("rfq failed\n%s", auth_resp)
