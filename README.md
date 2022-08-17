@@ -15,6 +15,7 @@ This project uses pattern matching, introduced in Python 3.10
 ## Running examples
 
 #### Config
+
 Each example requires a config file to be passed when executed.
 The complete config file structure is found below:
 
@@ -29,3 +30,18 @@ The complete config file structure is found below:
 Not every example requires all config arguments to be present.
 HTTP/REST examples will not require `ws_url` for example.
 
+## TODO
+
+### Short-term
+
+- [x] Add basic websocket client which supports authentication
+- [x] Support subscribing to RFQ orders (subscription supported, messages not handled gracefully)
+- [x] Add basic websocket client example to showcase authentication/rfq subscription)
+- [ ] Add server order/subscribe messages (includes RFQ).
+- [ ] Support requesting exchange entities/rules
+- [ ] Add ws support to place/manage orders
+
+### Long-term
+
+- [ ] Add basic HTTP client
+- [ ] Add basic HTTP client usage example
