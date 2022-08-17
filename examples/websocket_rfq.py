@@ -15,6 +15,15 @@ logging.basicConfig(
     datefmt='%Y-%m-%d %H:%M:%S')
 
 
+async def handle_snapshot(snapshot: server.ServerMessage):
+    assert (snapshot.type() == server.MessageType.snapshot)
+    logging.info("Snapshot arrived!\n%s", snapshot.body())
+
+
+async def handle_order_message(message: server.ServerMessage):
+    # Message type one of order_added, order_deleted, order_updated, order_executed
+    logging.info("Order message handled\n%s [%s]", message.type().name, message.body())
+
 
 async def run(cfg):
     url = cfg["ws_url"]
@@ -34,8 +43,8 @@ async def run(cfg):
     auth_tag = "auth"
     auth_future = mh.watch_tag(auth_tag)  # Set up a future waiting for a response with this tag
     await client.authenticate(auth_tag, cfg["api_key"], cfg["private_key"])  # Send auth request
-    auth_resp: server.ServerMessage = await async_result(auth_future)  # Wait for auth result arrive
-    assert(auth_resp.type() == server.MessageType.command_response)  # Validate response message type
+    auth_resp: server.ServerMessage = await async_result(auth_future)  # Wait for auth result to arrive
+    assert (auth_resp.type() == server.MessageType.command_response)  # Assert response message type
     # Check auth was successful.
     if auth_resp.body()["error_code"] != "0":
         logging.error("auth failed\n%s", auth_resp)
@@ -44,10 +53,18 @@ async def run(cfg):
 
     # Auth success, register for rfqs
     rfq_tag = "rfq"
-    rfq_future = mh.watch_tag(rfq_tag)
-    await client.register_for_rfqs(rfq_tag)
+    rfq_future = mh.watch_tag(rfq_tag)  # Set up a future waiting for a response with this tag
+
+    # Before sending the request, register handlers for 'snapshot' and order message types
+    mh.register_handler(server.MessageType.snapshot, handle_snapshot)  # Register a handler for snapshot messages
+    mh.register_handler(server.MessageType.order_added, handle_order_message)
+    mh.register_handler(server.MessageType.order_deleted, handle_order_message)
+    mh.register_handler(server.MessageType.order_updated, handle_order_message)
+    mh.register_handler(server.MessageType.order_executed, handle_order_message)
+
+    await client.register_for_rfqs(rfq_tag)  # Send RFQ request
     rfq_resp: server.ServerMessage = await async_result(rfq_future)  # Wait for rfq result arrive
-    assert (rfq_resp.type() == server.MessageType.command_response)  # Validate response message type
+    assert (rfq_resp.type() == server.MessageType.command_response)  # Assert response message type
 
     if rfq_resp.body()["error_code"] != "0":
         logging.error("rfq failed\n%s", auth_resp)
@@ -57,7 +74,6 @@ async def run(cfg):
     # Loop forever
     while True:
         await asyncio.sleep(10)
-
 
 
 if __name__ == '__main__':

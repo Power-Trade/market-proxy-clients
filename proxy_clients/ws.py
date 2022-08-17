@@ -144,7 +144,7 @@ class MessageHandler:
             func_handler = self._message_type_handlers.get(msg.type())
             if func_handler is not None:
                 asyncio.ensure_future(func_handler(msg))
-                return  # Shortcut return, no need to set/check handled
+                continue  # Shortcut, no need to set/check handled
             if not handled:
                 print("Message Handler - Unhandled message with type: {}".format(msg.type()))
 
