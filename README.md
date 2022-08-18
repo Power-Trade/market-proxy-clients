@@ -19,7 +19,7 @@ This project uses pattern matching, introduced in Python 3.10
 Each example requires a config file to be passed when executed.
 The complete config file structure is found below:
 
-``` json
+```json
 {
   "api_key": "", // e.g. cfab9ba7581377cfc343c22d8d285561
   "private_key": "", // e.g. "-----BEGIN EC PRIVATE KEY-----....-----END EC PRIVATE KEY-----
@@ -37,7 +37,7 @@ HTTP/REST examples will not require `ws_url` for example.
 - [x] Add basic websocket client which supports authentication
 - [x] Support subscribing to RFQ orders (subscription supported, messages not handled gracefully)
 - [x] Add basic websocket client example to showcase authentication/rfq subscription)
-- [ ] Add server order/subscribe messages (includes RFQ).
+- [x] Add server order/subscribe messages (includes RFQ).
 - [ ] Support requesting exchange entities/rules
 - [ ] Add ws support to place/manage orders
 

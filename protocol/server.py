@@ -1,7 +1,6 @@
 import enum
 import json
 
-import jsonschema
 from jsonschema import validate
 
 
@@ -29,9 +28,12 @@ class ServerMessage:
 
 def parse(raw) -> ServerMessage:
     msg: dict = json.loads(raw)
-    for key, val in msg.items():  # Shortcut to get the first and only key/value. Only one iteration will occur.
-        msg_type = MessageType[key]  # Check if the message type is supported. Throws if invalid
-        validate_message(msg_type, val)  # Validate message body. Throws if invalid
+    # Shortcut to get the first and only key/value. Only one iteration will occur.
+    for key, val in msg.items():
+        # Check if the message type is supported. Throws if invalid
+        msg_type = MessageType[key]
+        # Validate message body. Throws if invalid
+        validate_message(msg_type, val)
         return ServerMessage(msg_type, val)
 
 
@@ -52,7 +54,8 @@ def validate_message(msg_type: MessageType, body: dict):
         case MessageType.order_executed:
             return validate(instance=body, schema=order_executed_schema)
         case _:
-            err = "no validator for supported message type: {}".format(msg_type)
+            err = "no validator for supported message type: {}".format(
+                msg_type)
             print(err)
             raise AssertionError(err)
 
@@ -169,7 +172,7 @@ order_updated_schema = {
 
 # Example
 #
-order_executed_schema =  {
+order_executed_schema = {
     "type": "object",
     "properties": {
         "server_utc_timestamp": {"type": "string"},

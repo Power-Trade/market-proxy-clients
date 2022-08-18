@@ -1,5 +1,3 @@
-import types
-
 import websockets
 import asyncio
 import json
@@ -10,6 +8,7 @@ import protocol.server as server
 import logging
 
 logging.getLogger("websockets").setLevel(logging.CRITICAL)
+
 
 def generate_heartbeat():
     return {"heartbeat": {"timestamp": str(utils.time.time_us())}}
@@ -27,6 +26,7 @@ class ProxyWSClient:
 
     # ====== INTERFACE ======
     async def connect(self, url):
+        self.logger.log(logging.INFO, "connecting to %s", url)
         self.ws = await websockets.connect(url)
         self.recv_queue = asyncio.Queue()
         asyncio.ensure_future(self.__read())
@@ -36,8 +36,27 @@ class ProxyWSClient:
         now = utils.time.time_s()
         # Generate JWT with 1 min expiry
         # All PowerTrade api keys use the same algo 'ES256'
-        token = jwt.encode({"exp": now + 60, "iat": now, "sub": api_key}, private_key, algorithm="ES256")
+        token = jwt.encode({"exp": now + 60, "iat": now,
+                           "sub": api_key}, private_key, algorithm="ES256")
         await self.__write({"authenticate": {"user_tag": user_tag, "credentials_secret": token}})
+
+    async def sendMultiLegOrder(self, user_tag, side, price, quantity, legs):
+        await self.__write({
+            "new_order": {
+                "market_id": "0",
+                "side": side,
+                "type": "LIMIT",
+                "time_in_force": "GTC",
+                "quantity": str(quantity),
+                "minimum_quantity": "0.0",
+                "price": price,
+                "client_order_id": str(utils.time.time_us()) + user_tag,
+                "recv_window": "1",
+                "timestamp": str(utils.time.time_us()),
+                "legs": legs,
+                "user_tag": user_tag
+            }
+        })
 
     async def consume(self) -> server.ServerMessage:
         """
@@ -72,10 +91,12 @@ class ProxyWSClient:
 
             # Parse message and send to consumer if valid
             try:
-                server_message = server.parse(msg)  # Parse message, throws on failure.
+                # Parse message, throws on failure.
+                server_message = server.parse(msg)
                 await self.__handle_message(server_message)
             except Exception as err:
-                self.logger.error("error parsing server message\nMessage:%s", msg)
+                self.logger.error(
+                    "error parsing server message\nMessage:%s", msg)
 
     async def __write(self, msg):
         raw_msg = json.dumps(msg)
@@ -89,9 +110,11 @@ class ProxyWSClient:
 
     async def __handle_message(self, server_message: server.ServerMessage):
         # Check if there is an internal handler
-        handler = ProxyWSClient.server_message_handlers.get(server_message.type())
+        handler = ProxyWSClient.server_message_handlers.get(
+            server_message.type())
         if handler is not None:
-            await handler(self, server_message)  # Handle internally, don't pass to consume queue.
+            # Handle internally, don't pass to consume queue.
+            await handler(self, server_message)
         else:
             # Queue to be consumed
             self.recv_queue.put_nowait(server_message)
@@ -100,7 +123,8 @@ class ProxyWSClient:
         # calculate server latency
         client_timestamp = utils.time.time_us()
         server_timestamp = int(server_message.body()["server_utc_timestamp"])
-        self.logger.debug("server latency: %sus", client_timestamp - server_timestamp)
+        self.logger.debug("server latency: %sus",
+                          client_timestamp - server_timestamp)
         await self.__write(generate_heartbeat())  # respond
 
     server_message_handlers = {
@@ -143,10 +167,11 @@ class MessageHandler:
             # Check if there is a generic handler
             func_handler = self._message_type_handlers.get(msg.type())
             if func_handler is not None:
-                asyncio.ensure_future(func_handler(msg))
+                asyncio.ensure_future(func_handler(msg, self._client))
                 continue  # Shortcut, no need to set/check handled
             if not handled:
-                print("Message Handler - Unhandled message with type: {}".format(msg.type()))
+                print(
+                    "Message Handler - Unhandled message with type: {}".format(msg.type()))
 
     def __cancel_all(self):
         self._cancelled = True
@@ -160,7 +185,8 @@ class MessageHandler:
     def watch_tag(self, tag: str) -> asyncio.Future:
         if self._cancelled:
             raise RuntimeError("connection disconnected")
-        assert (self._tag_handlers.get(tag) is None)  # Make sure this tag isn't already being wait for.
+        # Make sure this tag isn't already being wait for.
+        assert (self._tag_handlers.get(tag) is None)
         f = asyncio.Future()
         self._tag_handlers[tag] = f
         return f
@@ -170,4 +196,3 @@ class MessageHandler:
             raise RuntimeError("connection disconnected")
         assert (self._message_type_handlers.get(msg_type) is None)
         self._message_type_handlers[msg_type] = handler
-
