@@ -1,0 +1,19 @@
+{
+  "$schema": "http://json-schema.org/schema",
+  "type": "object",
+  "required": ["refresh_response"],
+  "properties": {
+    "refresh_response": {
+      "type": "object",
+      "properties": {
+        "order_id": { "type": "string" },
+        "client_order_id": { "type": "string" },
+        "timestamp": {
+          "type": "string",
+          "pattern": "^[0-9]+$"
+        },
+        "reason": { "type": "string" }
+      }
+    }
+  }
+}

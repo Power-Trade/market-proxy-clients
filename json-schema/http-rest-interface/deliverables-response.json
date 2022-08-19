@@ -1,0 +1,23 @@
+{
+  "$schema": "http://json-schema.org/schema",
+  "type": "object",
+  "required": ["deliverables_response"],
+  "properties": {
+    "deliverables_response": {
+      "type": "object",
+      "properties": {
+        "server_utc_timestamp": { "type": "string" },
+        "deliverables": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "symbol": { "type": "string" },
+              "deliverable_id": { "type": "string" }
+            }
+          }
+        }
+      }
+    }
+  }
+}

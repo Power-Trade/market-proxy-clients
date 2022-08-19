@@ -1,0 +1,39 @@
+{
+  "$schema": "http://json-schema.org/schema",
+  "type": "object",
+  "required": ["trade_history_response"],
+  "properties": {
+    "trade_history_response": {
+      "type": "object",
+      "properties": {
+        "server_utc_timestamp": { "type": "string" },
+        "user_tag": { "type": "string" },
+        "executions": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "tradeable_entity_id": { "type": "string" },
+              "trade_id": { "type": "string" },
+              "order_id": { "type": "string" },
+              "client_order_id": { "type": "string" },
+              "executed_price": {
+                "type": "string"
+              },
+              "executed_quantity": {
+                "type": "string"
+              },
+              "liquidity_flag": { "type": "string" },
+              "order_price": {
+                "type": "string"
+              },
+              "side": { "type": "string" },
+              "order_state": { "type": "string" },
+              "server_utc_timestamp": { "type": "string" }
+            }
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,37 @@
+{
+  "$schema": "http://json-schema.org/schema",
+  "type": "object",
+  "required": ["entities_and_rules_response"],
+  "properties": {
+    "entities_and_rules_response": {
+      "type": "object",
+      "properties": {
+        "server_utc_timestamp": { "type": "string" },
+        "symbols": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "symbol": { "type": "string" },
+              "tradeable_entity_id": { "type": "string" },
+              "status": { "type": "string" },
+              "base_asset": { "type": "string" },
+              "quote_asset": { "type": "string" },
+              "minimum_quantity": {
+                "type": "string"
+              },
+              "maximum_quantity": {
+                "type": "string"
+              },
+              "minimum_value": { "type": "string" },
+              "maximum_value": { "type": "string" },
+              "quantity_step": { "type": "string" },
+              "price_step": { "type": "string" },
+              "tags": { "type": "array", "items": { "type": "string" } }
+            }
+          }
+        }
+      }
+    }
+  }
+}

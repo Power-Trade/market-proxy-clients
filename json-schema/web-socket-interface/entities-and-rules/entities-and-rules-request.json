@@ -1,0 +1,15 @@
+{
+  "$schema": "http://json-schema.org/schema",
+  "type": "object",
+  "required": ["entities_and_rules_request"],
+  "properties": {
+    "entities_and_rules_request": {
+      "type": "object",
+      "properties": {
+        "order_id": { "type": "string" },
+        "client_order_id": { "type": "string" },
+        "user_tag": { "type": "string" }
+      }
+    }
+  }
+}

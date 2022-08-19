@@ -1,0 +1,56 @@
+{
+  "$schema": "http://json-schema.org/schema",
+  "type": "object",
+  "required": ["cancel_order"],
+  "properties": {
+    "cancel_order": {
+      "type": "object",
+      "properties": {
+        "server_utc_timestamp": { "type": "string", "pattern": "^[0-9]+$" },
+        "order_id": { "type": "string" },
+        "client_order_id": { "type": "string" },
+        "timestamp": { "type": "string", "pattern": "^[0-9]+$" },
+        "reason": { "type": "string" }
+      },
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "legs": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "ratio": { "type": "string", "pattern": "^[0-9]+$" },
+                  "symbol": { "type": "string" },
+                  "tradeable_entity_id": { "type": "string" }
+                }
+              }
+            }
+          }
+        },
+        {
+          "type": "object",
+          "oneOf": [
+            {
+              "type": "object",
+              "properties": {
+                "symbol": {
+                  "type": "string"
+                }
+              }
+            },
+            {
+              "type": "object",
+              "properties": {
+                "tradeable_entity_id": {
+                  "type": "string"
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

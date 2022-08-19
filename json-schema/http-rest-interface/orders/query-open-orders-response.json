@@ -1,0 +1,47 @@
+{
+  "$schema": "http://json-schema.org/schema",
+  "type": "object",
+  "required": ["query_open_orders_response"],
+  "properties": {
+    "query_open_orders_response": {
+      "type": "object",
+      "properties": {
+        "utc_timestamp": { "type": "string" },
+        "open_orders": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "symbol": { "type": "string" },
+              "tradeable_entity_id": { "type": "string" },
+              "order_id": { "type": "string" },
+              "client_order_id": { "type": "string" },
+              "quantity": { "type": "string" },
+              "price": { "type": "string" },
+              "side": { "type": "string" },
+              "order_state": { "type": "string" },
+              "cancel_state": { "type": "string" },
+              "executions": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "utc_timestamp": { "type": "string" },
+                    "executed_price": {
+                      "type": "string"
+                    },
+                    "executed_quantity": {
+                      "type": "string"
+                    },
+                    "trade_id": { "type": "string" },
+                    "liquidity_flag": { "type": "string" }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

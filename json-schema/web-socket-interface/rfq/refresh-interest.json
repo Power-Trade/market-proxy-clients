@@ -1,0 +1,15 @@
+{
+  "$schema": "http://json-schema.org/schema",
+  "type": "object",
+  "required": ["refresh_interest"],
+  "properties": {
+    "refresh_interest": {
+      "type": "object",
+      "properties": {
+        "order_id": { "type": "string" },
+        "client_order_id": { "type": "string" },
+        "user_tag": { "type": "string" }
+      }
+    }
+  }
+}

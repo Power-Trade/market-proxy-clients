@@ -1,0 +1,61 @@
+{
+  "$schema": "http://json-schema.org/schema",
+  "type": "object",
+  "required": ["new_order"],
+  "properties": {
+    "new_order": {
+      "type": "object",
+      "properties": {
+        "market_id": { "type": "string", "pattern": "^[0-9]+$" },
+        "side": { "type": "string" },
+        "type": { "type": "string" },
+        "time_in_force": { "type": "string" },
+        "quantity": { "type": "string" },
+        "price": { "type": "string" },
+        "client_order_id": { "type": "string" },
+        "recv_window": { "type": "string", "pattern": "^[0-9]+$" },
+        "timestamp": { "type": "string", "pattern": "^[0-9]+$" },
+        "user_tag": { "type": "string" }
+      },
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "legs": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "ratio": { "type": "string", "pattern": "^[0-9]+$" },
+                  "symbol": { "type": "string" },
+                  "tradeable_entity_id": { "type": "string" }
+                }
+              }
+            }
+          }
+        },
+        {
+          "type": "object",
+          "oneOf": [
+            {
+              "type": "object",
+              "properties": {
+                "symbol": {
+                  "type": "string"
+                }
+              }
+            },
+            {
+              "type": "object",
+              "properties": {
+                "tradeable_entity_id": {
+                  "type": "string"
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

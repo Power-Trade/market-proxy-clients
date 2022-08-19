@@ -1,0 +1,36 @@
+{
+  "$schema": "http://json-schema.org/schema",
+  "type": "object",
+  "required": ["trade_history_request"],
+  "properties": {
+    "trade_history_request": {
+      "type": "object",
+      "required": ["user_tag"],
+      "properties": {
+        "user_tag": {
+          "type": "string"
+        }
+      },
+      "oneOf": [
+        {
+          "type": "object",
+          "required": ["trade_count"],
+          "properties": {
+            "trade_count": {
+              "type": "string"
+            }
+          }
+        },
+        {
+          "type": "object",
+          "required": ["trade_time"],
+          "properties": {
+            "trade_time": {
+              "type": "string"
+            }
+          }
+        }
+      ]
+    }
+  }
+}

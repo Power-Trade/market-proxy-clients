@@ -1,0 +1,18 @@
+{
+  "$schema": "http://json-schema.org/schema",
+  "type": "object",
+  "required": ["subscribe"],
+  "properties": {
+    "subscribe": {
+      "type": "object",
+      "properties": {
+        "market_id": { "type": "string" },
+        "symbol": { "type": "string" },
+        "type": { "type": "string" },
+        "tradeable_entity_id": { "type": "string" },
+        "interval": { "type": "string", "pattern": "^[0-9]+$" },
+        "user_tag": { "type": "string" }
+      }
+    }
+  }
+}

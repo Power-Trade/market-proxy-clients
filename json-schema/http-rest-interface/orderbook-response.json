@@ -1,0 +1,42 @@
+{
+  "$schema": "http://json-schema.org/schema",
+  "type": "object",
+  "required": ["orderbook_response"],
+  "properties": {
+    "orderbook_response": {
+      "type": "object",
+      "properties": {
+        "server_utc_timestamp": { "type": "string" },
+        "symbol": { "type": "string" },
+        "buy": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "price": {
+                "type": "string"
+              },
+              "quantity": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "sell": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "price": {
+                "type": "string"
+              },
+              "quantity": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

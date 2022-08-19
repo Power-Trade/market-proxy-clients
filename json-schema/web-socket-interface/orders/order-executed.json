@@ -1,0 +1,21 @@
+{
+  "$schema": "http://json-schema.org/schema",
+  "type": "object",
+  "required": ["order_executed"],
+  "properties": {
+    "order_executed": {
+      "type": "object",
+      "properties": {
+        "server_utc_timestamp": { "type": "string", "pattern": "^[0-9]+$" },
+        "market_id": { "type": "string" },
+        "symbol": { "type": "string" },
+        "tradeable_entity_id": { "type": "string" },
+        "side": { "type": "string" },
+        "order_id": { "type": "string" },
+        "price": { "type": "string" },
+        "quantity": { "type": "string" },
+        "utc_timestamp": { "type": "string", "pattern": "^[0-9]+$" }
+      }
+    }
+  }
+}

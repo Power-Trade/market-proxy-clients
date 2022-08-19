@@ -1,0 +1,25 @@
+{
+  "$schema": "http://json-schema.org/schema",
+  "type": "object",
+  "required": ["execution"],
+  "properties": {
+    "execution": {
+      "type": "object",
+      "properties": {
+        "server_utc_timestamp": { "type": "string", "pattern": "^[0-9]+$" },
+        "tradeable_entity_id": { "type": "string" },
+        "symbol": { "type": "string" },
+        "trade_id": { "type": "string" },
+        "order_id": { "type": "string" },
+        "client_order_id": { "type": "string" },
+        "executed_price": { "type": "string" },
+        "executed_quantity": { "type": "string" },
+        "liquidity_flag": { "type": "string" },
+        "price": { "type": "string" },
+        "side": { "type": "string" },
+        "order_state": { "type": "string" },
+        "utc_timestamp": { "type": "string", "pattern": "^[0-9]+$" }
+      }
+    }
+  }
+}
