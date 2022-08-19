@@ -40,7 +40,7 @@ class ProxyWSClient:
                            "sub": api_key}, private_key, algorithm="ES256")
         await self.__write({"authenticate": {"user_tag": user_tag, "credentials_secret": token}})
 
-    async def sendMultiLegOrder(self, user_tag, side, price, quantity, legs):
+    async def send_multi_leg_order(self, user_tag, side, price, quantity, legs):
         await self.__write({
             "new_order": {
                 "market_id": "0",
@@ -51,9 +51,27 @@ class ProxyWSClient:
                 "minimum_quantity": "0.0",
                 "price": price,
                 "client_order_id": str(utils.time.time_us()) + user_tag,
+                # valid for 10 minutes, "recv_window": "2" -> valid for 20 minutes etc ...
                 "recv_window": "1",
                 "timestamp": str(utils.time.time_us()),
                 "legs": legs,
+                "user_tag": user_tag
+            }
+        })
+
+    async def send_single_leg_order(self, user_tag, side, price, quantity, symbol):
+        await self.__write({
+            "new_order": {
+                "market_id": "0",
+                "side": side,
+                "type": "LIMIT",
+                "time_in_force": "GTC",
+                "quantity": str(quantity),
+                "price": price,
+                "client_order_id": str(utils.time.time_us()) + user_tag,
+                "recv_window": "144",  # 1 day = 24 * 6 * (10min cycles)
+                "timestamp": str(utils.time.time_us()),
+                "symbol": symbol,
                 "user_tag": user_tag
             }
         })
@@ -74,6 +92,14 @@ class ProxyWSClient:
     async def deregister_for_rfqs(self, tag):
         await self.__write({"deregister_for_rfqs": {"user_tag": tag}})
 
+    async def get_entities(self, user_tag):
+        await self.__write({
+            "entities_and_rules_request": {
+                "order_id": "1234567",
+                "user_tag": user_tag
+            }
+        })
+
     # ====== IMPL =======
 
     async def __read(self):
@@ -82,7 +108,7 @@ class ProxyWSClient:
             # Read message from websocket
             try:
                 msg = await self.ws.recv()
-                self.logger.debug("read: %s", msg)
+                self.logger.debug("read: %s", msg[:1000])
             except Exception as err:
                 self.logger.error("error reading from websocket\n%s", err)
                 # Send None to consumer queue to signal cancellation.
@@ -96,7 +122,7 @@ class ProxyWSClient:
                 await self.__handle_message(server_message)
             except Exception as err:
                 self.logger.error(
-                    "error parsing server message\nMessage:%s", msg)
+                    "error parsing server message\nMessage:%s", msg[:1000])
 
     async def __write(self, msg):
         raw_msg = json.dumps(msg)
