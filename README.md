@@ -10,7 +10,7 @@ This project uses pattern matching, introduced in Python 3.10
 ## Setup
 
 1. Install requirements with `pip install -r requirements.txt`
-2. Run `python main.py`
+2. Run `python main.py path-to-configuration.json`
 
 ## Running examples
 
