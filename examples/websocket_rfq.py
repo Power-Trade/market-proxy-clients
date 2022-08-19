@@ -1,7 +1,5 @@
 import protocol.server as server
 import proxy_clients.ws as ws_client
-import sys
-import json
 import asyncio
 import logging
 from utils.future import async_result
@@ -14,7 +12,7 @@ logging.basicConfig(
     level=logging.DEBUG,
     datefmt='%Y-%m-%d %H:%M:%S')
 
-entities_by_symbol = {}
+entities_by_symbol = dict()
 
 
 async def do_auth(client: ws_client.ProxyWSClient, mh: ws_client.MessageHandler, cfg):
@@ -163,25 +161,3 @@ async def run(cfg):
     # Loop forever
     while True:
         await asyncio.sleep(10)
-
-
-if __name__ == '__main__':
-    args = sys.argv
-    if len(args) < 2:
-        raise RuntimeError("insufficient arguments")
-
-    # cfg file is 2nd arg
-    f = open(args[1])
-    cfg: dict = json.load(f)
-    f.close()
-
-    # assert config has an api_key + private key for JWT generation
-    if "api_key" not in cfg:
-        raise AssertionError("invalid cfg doesn't contain 'api_key'")
-    if "private_key" not in cfg:
-        raise AssertionError("invalid cfg doesn't contain 'private_key'")
-
-    loop = asyncio.new_event_loop()
-    asyncio.set_event_loop(loop)
-    asyncio.ensure_future(run(cfg), loop=loop)
-    loop.run_forever()

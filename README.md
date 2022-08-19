@@ -9,26 +9,37 @@ This project uses pattern matching, introduced in Python 3.10
 
 ## Setup
 
-1. Setup a virtual env if wanted
-2. Install requirements with `pip install -r requirements.txt`
+1. Install requirements with `pip install -r requirements.txt`
+2. Run `python main.py`
 
 ## Running examples
 
-#### Config
+### Config
 
-Each example requires a config file to be passed when executed.
-The complete config file structure is found below:
+To generate your own config, you need to go to PowerTrade's web application:
 
-```json
-{
-  "api_key": "", // e.g. cfab9ba7581377cfc343c22d8d285561
-  "private_key": "", // e.g. "-----BEGIN EC PRIVATE KEY-----....-----END EC PRIVATE KEY-----
-  "ws_url": "" // e.g. "ws://34.141.36.217:4321"
-}
-```
+DEV: https://powertrade-web-dev.web.app/trade/options/BTC/
+TEST: https://powertrade-web-test.web.app/trade/options/BTC/
+STAGING: https://powertrade-web-staging.web.app/trade/options/BTC/
 
-Not every example requires all config arguments to be present.
-HTTP/REST examples will not require `ws_url` for example.
+- Sign up
+- Click on the accout profile menu in the top right and choose `API Keys`
+- Generate a key to use inside `main.py`
+- Fund your account with the `Request Test Assets` item in the same account profile menu
+
+## Documentation
+
+Power Trade's Market Proxy API: https://api-docs-5180b.web.app/
+
+## Application flow
+
+As per `./examples/websocket_rfq.py`
+
+- Connect to the ws endpoint: https://api-docs-5180b.web.app/docs/environments
+- Authenticate using your JWT generate from the configuration: https://api-docs-5180b.web.app/docs/web-socket-interface/authenticate-message
+- Fetch all of Power Trades tradeable symbols: https://api-docs-5180b.web.app/docs/web-socket-interface/entities-and-rules/entities-and-rules-request
+- Listen to RFQs on the platform: https://api-docs-5180b.web.app/docs/web-socket-interface/rfq/register-for-rfq
+-
 
 ## TODO
 
@@ -38,8 +49,8 @@ HTTP/REST examples will not require `ws_url` for example.
 - [x] Support subscribing to RFQ orders (subscription supported, messages not handled gracefully)
 - [x] Add basic websocket client example to showcase authentication/rfq subscription)
 - [x] Add server order/subscribe messages (includes RFQ).
-- [ ] Support requesting exchange entities/rules
-- [ ] Add ws support to place/manage orders
+- [x] Support requesting exchange entities/rules
+- [x] Add ws support to place/manage orders
 
 ### Long-term
 
