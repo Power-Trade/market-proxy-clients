@@ -1,0 +1,18 @@
+{
+  "$schema": "http://json-schema.org/schema",
+  "type": "object",
+  "required": ["authenticate"],
+  "properties": {
+    "authenticate": {
+      "type": "object",
+      "properties": {
+        "credentials_secret": {
+          "type": "string"
+        },
+        "user_tag": {
+          "type": "string"
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,39 @@
+{
+  "$schema": "http://json-schema.org/schema",
+  "type": "object",
+  "required": ["snapshot"],
+  "properties": {
+    "snapshot": {
+      "type": "object",
+      "properties": {
+        "server_utc_timestamp": { "type": "string", "pattern": "^[0-9]+$" },
+        "market_id": { "type": "string" },
+        "symbol": { "type": "string" },
+        "buy": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "price": { "type": "string" },
+              "quantity": { "type": "string" },
+              "ordered": { "type": "string" },
+              "utc_timestamp": { "type": "string", "pattern": "^[0-9]+$" }
+            }
+          }
+        },
+        "sell": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "price": { "type": "string" },
+              "quantity": { "type": "string" },
+              "ordered": { "type": "string" },
+              "utc_timestamp": { "type": "string", "pattern": "^[0-9]+$" }
+            }
+          }
+        }
+      }
+    }
+  }
+}

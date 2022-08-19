@@ -1,0 +1,15 @@
+{
+  "$schema": "http://json-schema.org/schema",
+  "type": "object",
+  "required": ["register_for_rfqs"],
+  "properties": {
+    "register_for_rfqs": {
+      "type": "object",
+      "properties": {
+        "user_tag": {
+          "type": "string"
+        }
+      }
+    }
+  }
+}

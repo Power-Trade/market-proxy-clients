@@ -1,0 +1,30 @@
+{
+  "$schema": "http://json-schema.org/schema",
+  "type": "object",
+  "required": ["positions_response"],
+  "properties": {
+    "positions_response": {
+      "type": "object",
+      "properties": {
+        "server_utc_timestamp": { "type": "string" },
+        "positions": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "symbol": { "type": "string" },
+              "deliverable_id": { "type": "string" },
+              "product_type": { "type": "string" },
+              "timestamp": { "type": "string", "pattern": "^[0-9]+$" },
+              "side": { "type": "string" },
+              "size": { "type": "string" },
+              "average_entry_price": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

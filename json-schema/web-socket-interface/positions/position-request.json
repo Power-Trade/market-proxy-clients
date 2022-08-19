@@ -1,0 +1,15 @@
+{
+  "$schema": "http://json-schema.org/schema",
+  "type": "object",
+  "required": ["position_info"],
+  "properties": {
+    "position_info": {
+      "type": "object",
+      "properties": {
+        "user_tag": {
+          "type": "string"
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "$schema": "http://json-schema.org/schema",
+  "type": "object",
+  "required": ["command_response"],
+  "properties": {
+    "command_response": {
+      "type": "object",
+      "properties": {
+        "error_code": {
+          "type": "string",
+          "pattern": "^[0-9]+$"
+        },
+        "error_text": {
+          "type": "string"
+        },
+        "user_tag": {
+          "type": "string"
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "$schema": "http://json-schema.org/schema",
+  "type": "object",
+  "required": ["heartbeat"],
+  "properties": {
+    "heartbeat": {
+      "type": "object",
+      "properties": {
+        "timestamp": {
+          "type": "string",
+          "pattern": "^[0-9]+$"
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,56 @@
+{
+  "$schema": "http://json-schema.org/schema",
+  "type": "object",
+  "required": ["order_accepted"],
+  "properties": {
+    "order_accepted": {
+      "type": "object",
+      "properties": {
+        "order_id": { "type": "string" },
+        "client_order_id": { "type": "string" },
+        "reason": { "type": "string" },
+        "quantity": { "type": "string" },
+        "price": { "type": "string" }
+      },
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "legs": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "ratio": { "type": "string", "pattern": "^[0-9]+$" },
+                  "symbol": { "type": "string" },
+                  "tradeable_entity_id": { "type": "string" }
+                }
+              }
+            }
+          }
+        },
+        {
+          "type": "object",
+          "oneOf": [
+            {
+              "type": "object",
+              "properties": {
+                "symbol": {
+                  "type": "string"
+                }
+              }
+            },
+            {
+              "type": "object",
+              "properties": {
+                "tradeable_entity_id": {
+                  "type": "string"
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

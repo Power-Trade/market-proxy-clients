@@ -1,0 +1,11 @@
+{
+  "$schema": "http://json-schema.org/schema",
+  "type": "object",
+  "required": ["server_utc_timestamp"],
+  "properties": {
+    "server_utc_timestamp": {
+      "type": "string",
+      "pattern": "^[0-9]+$"
+    }
+  }
+}
