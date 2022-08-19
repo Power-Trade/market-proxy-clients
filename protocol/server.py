@@ -12,6 +12,9 @@ class MessageType(enum.Enum):
     order_deleted = 5
     order_updated = 6
     order_executed = 7
+    order_accepted = 8
+    execution = 9
+    entities_and_rules_response = 10
 
 
 class ServerMessage:
@@ -53,6 +56,12 @@ def validate_message(msg_type: MessageType, body: dict):
             return validate(instance=body, schema=order_updated_schema)
         case MessageType.order_executed:
             return validate(instance=body, schema=order_executed_schema)
+        case MessageType.order_accepted:
+            return validate(instance=body, schema=order_accepted_schema)
+        case MessageType.execution:
+            return validate(instance=body, schema=execution_schema)
+        case MessageType.entities_and_rules_response:
+            return validate(instance=body, schema=entities_and_rules_response_schema)
         case _:
             err = "no validator for supported message type: {}".format(
                 msg_type)
@@ -184,5 +193,73 @@ order_executed_schema = {
         "price": {"type": "string"},
         "quantity": {"type": "string"},
         "utc_timestamp": {"type": "string"}
+    }
+}
+
+# Example
+#
+order_accepted_schema = {
+    "type": "object",
+    "properties": {
+        "symbol": {"type": "string"},
+        "tradeable_entity_id": {"type": "string"},
+        "order_id": {"type": "string"},
+        "type": {"type": "string"},
+        "client_order_id": {"type": "string"},
+        "price": {"type": "string"},
+        "quantity": {"type": "string"},
+        "utc_timestamp": {"type": "string"}
+    }
+}
+
+# Example
+#
+execution_schema = {
+    "type": "object",
+    "properties": {
+        "server_utc_timestamp": {"type": "string"},
+        "utc_timestamp": {"type": "string"},
+        "tradeable_entity_id": {"type": "string"},
+        "symbol": {"type": "string"},
+        "trade_id": {"type": "string"},
+        "order_id": {"type": "string"},
+        "client_order_id": {"type": "string"},
+        "executed_price": {"type": "string"},
+        "executed_quantity": {"type": "string"},
+        "liquidity_flag": {"type": "string"},
+        "price": {"type": "string"},
+        "side": {"type": "string"},
+        "order_state": {"type": "string"},
+    }
+}
+
+
+# Example
+#
+entities_and_rules_response_schema = {
+    "type": "object",
+    "properties": {
+        "server_utc_timestamp": {"type": "string"},
+        "user_tag": {"type": "string"},
+        "symbols": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "symbol": {"type": "string"},
+                    "tradeable_entity_id": {"type": "string"},
+                    "status": {"type": "string"},
+                    "base_asset": {"type": "string"},
+                    "quote_asset": {"type": "string"},
+                    "minimum_quantity": {"type": "string"},
+                    "maximum_quantity": {"type": "string"},
+                    "minimum_value": {"type": "string"},
+                    "maximum_value": {"type": "string"},
+                    "quantity_step": {"type": "string"},
+                    "price_step": {"type": "string"},
+                    "tags": {"type": "array", "items": {"type": "string"}},
+                }
+            }
+        }
     }
 }
