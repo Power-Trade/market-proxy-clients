@@ -3,6 +3,45 @@ import json
 
 from jsonschema import validate
 
+f_command_response_schema = open('json-schema/common/command-response.json')
+command_response_schema = json.load(f_command_response_schema)
+
+f_heartbeat_schema = open('json-schema/common/heartbeat.json')
+heartbeat_schema = json.load(f_heartbeat_schema)
+
+f_snapshot_schema = open(
+    'json-schema/web-socket-interface/entities-and-rules/snapshot.json')
+snapshot_schema = json.load(f_snapshot_schema)
+
+f_order_added_schema = open(
+    'json-schema/web-socket-interface/orders/order-added.json')
+order_added_schema = json.load(f_order_added_schema)
+
+f_order_deleted_schema = open(
+    'json-schema/web-socket-interface/orders/order-deleted.json')
+order_deleted_schema = json.load(f_order_deleted_schema)
+
+f_order_updated_schema = open(
+    'json-schema/web-socket-interface/orders/order-updated.json')
+order_updated_schema = json.load(f_order_updated_schema)
+
+f_order_executed_schema = open(
+    'json-schema/web-socket-interface/orders/order-executed.json')
+order_executed_schema = json.load(f_order_executed_schema)
+
+f_order_accepted_schema = open(
+    'json-schema/web-socket-interface/orders/order-accepted.json')
+order_accepted_schema = json.load(f_order_accepted_schema)
+
+f_execution_schema = open(
+    'json-schema/web-socket-interface/orders/execution.json')
+execution_schema = json.load(f_execution_schema)
+
+f_entities_and_rules_response_schema = open(
+    'json-schema/web-socket-interface/entities-and-rules/entities-and-rules-response.json')
+entities_and_rules_response_schema = json.load(
+    f_entities_and_rules_response_schema)
+
 
 class MessageType(enum.Enum):
     command_response = 1
@@ -36,7 +75,7 @@ def parse(raw) -> ServerMessage:
         # Check if the message type is supported. Throws if invalid
         msg_type = MessageType[key]
         # Validate message body. Throws if invalid
-        validate_message(msg_type, val)
+        validate_message(msg_type, msg)
         return ServerMessage(msg_type, val)
 
 
@@ -67,199 +106,3 @@ def validate_message(msg_type: MessageType, body: dict):
                 msg_type)
             print(err)
             raise AssertionError(err)
-
-
-# ============== Schemas ==============
-
-# Example:
-# {"command_response":{"error_code":"0","error_text":"success","user_tag":"rfq_tag"}}
-command_response_schema = {
-    "type": "object",
-    "properties": {
-        "error_code": {"type": "string"},
-        "error_text": {"type": "string"},
-        "user_tag": {"type": "string"}
-    }
-}
-# Example:
-# {"heartbeat":{"server_utc_timestamp":"1660733618452901"}}
-heartbeat_schema = {
-    "type": "object",
-    "properties": {
-        "server_utc_timestamp": {"type": "string"}
-    }
-}
-
-# Example:
-# {"snapshot":{"server_utc_timestamp":"1660727998458179","market_id":"255","tradeable_entity_id":"117@1/336@-1/1244@-1/1473@1","symbol":"BTC-20220930-25000C@1/BTC-20220930-26000C@-1/BTC-20220930-22000P@-1/BTC-20220930-23000P@1","buy":[],"sell":[]}}
-snapshot_schema = {
-    "type": "object",
-    "properties": {
-        "server_utc_timestamp": {"type": "string"},
-        "market_id": {"type": "string"},
-        "symbol": {"type": "string"},
-        "buy": {
-            "type": "array",
-            "items": {
-                "order": {
-                    "type": "object",
-                    "properties": {
-                        "price": {"type": "string"},
-                        "quantity": {"type": "string"},
-                        "ordered": {"type": "string"},
-                        "utc_timestamp": {"type": "string"},
-                    }
-                }
-            }
-        },
-        "sell": {
-            "type": "array",
-            "items": {
-                "order": {
-                    "type": "object",
-                    "properties": {
-                        "price": {"type": "string"},
-                        "quantity": {"type": "string"},
-                        "ordered": {"type": "string"},
-                        "utc_timestamp": {"type": "string"},
-                    }
-                }
-            }
-        },
-    }
-}
-
-# Example:
-# {"order_added":{"server_utc_timestamp":"1660735105778297","utc_timestamp":"1660735105767221","market_id":"255","tradeable_entity_id":"2752@1/2771@1","symbol":"ETH-20220902-1500P@1/ETH-20220902-2000C@1","side":"sell","order_id":"29872771","price":"0.0","quantity":"1.0"}}
-order_added_schema = {
-    "type": "object",
-    "properties": {
-        "server_utc_timestamp": {"type": "string"},
-        "market_id": {"type": "string"},
-        "symbol": {"type": "string"},
-        "tradeable_entity_id": {"type": "string"},
-        "side": {"type": "string"},
-        "order_id": {"type": "string"},
-        "price": {"type": "string"},
-        "quantity": {"type": "string"},
-        "utc_timestamp": {"type": "string"}
-    }
-}
-
-# Example:
-# {"order_deleted":{"server_utc_timestamp":"1660735165811304","utc_timestamp":"1660735165807583","market_id":"255","tradeable_entity_id":"2752@1/2771@1","symbol":"ETH-20220902-1500P@1/ETH-20220902-2000C@1","side":"sell","order_id":"29872771"}}
-order_deleted_schema = {
-    "type": "object",
-    "properties": {
-        "server_utc_timestamp": {"type": "string"},
-        "market_id": {"type": "string"},
-        "symbol": {"type": "string"},
-        "tradeable_entity_id": {"type": "string"},
-        "side": {"type": "string"},
-        "order_id": {"type": "string"},
-        "utc_timestamp": {"type": "string"}
-    }
-}
-
-# Example
-#
-order_updated_schema = {
-    "type": "object",
-    "properties": {
-        "server_utc_timestamp": {"type": "string"},
-        "market_id": {"type": "string"},
-        "symbol": {"type": "string"},
-        "tradeable_entity_id": {"type": "string"},
-        "side": {"type": "string"},
-        "old_order_id": {"type": "string"},
-        "new_order_id": {"type": "string"},
-        "price": {"type": "string"},
-        "quantity": {"type": "string"},
-        "utc_timestamp": {"type": "string"}
-    }
-}
-
-# Example
-#
-order_executed_schema = {
-    "type": "object",
-    "properties": {
-        "server_utc_timestamp": {"type": "string"},
-        "market_id": {"type": "string"},
-        "symbol": {"type": "string"},
-        "tradeable_entity_id": {"type": "string"},
-        "side": {"type": "string"},
-        "order_id": {"type": "string"},
-        "price": {"type": "string"},
-        "quantity": {"type": "string"},
-        "utc_timestamp": {"type": "string"}
-    }
-}
-
-# Example
-#
-order_accepted_schema = {
-    "type": "object",
-    "properties": {
-        "symbol": {"type": "string"},
-        "tradeable_entity_id": {"type": "string"},
-        "order_id": {"type": "string"},
-        "type": {"type": "string"},
-        "client_order_id": {"type": "string"},
-        "price": {"type": "string"},
-        "quantity": {"type": "string"},
-        "utc_timestamp": {"type": "string"}
-    }
-}
-
-# Example
-#
-execution_schema = {
-    "type": "object",
-    "properties": {
-        "server_utc_timestamp": {"type": "string"},
-        "utc_timestamp": {"type": "string"},
-        "tradeable_entity_id": {"type": "string"},
-        "symbol": {"type": "string"},
-        "trade_id": {"type": "string"},
-        "order_id": {"type": "string"},
-        "client_order_id": {"type": "string"},
-        "executed_price": {"type": "string"},
-        "executed_quantity": {"type": "string"},
-        "liquidity_flag": {"type": "string"},
-        "price": {"type": "string"},
-        "side": {"type": "string"},
-        "order_state": {"type": "string"},
-    }
-}
-
-
-# Example
-#
-entities_and_rules_response_schema = {
-    "type": "object",
-    "properties": {
-        "server_utc_timestamp": {"type": "string"},
-        "user_tag": {"type": "string"},
-        "symbols": {
-            "type": "array",
-            "items": {
-                "type": "object",
-                "properties": {
-                    "symbol": {"type": "string"},
-                    "tradeable_entity_id": {"type": "string"},
-                    "status": {"type": "string"},
-                    "base_asset": {"type": "string"},
-                    "quote_asset": {"type": "string"},
-                    "minimum_quantity": {"type": "string"},
-                    "maximum_quantity": {"type": "string"},
-                    "minimum_value": {"type": "string"},
-                    "maximum_value": {"type": "string"},
-                    "quantity_step": {"type": "string"},
-                    "price_step": {"type": "string"},
-                    "tags": {"type": "array", "items": {"type": "string"}},
-                }
-            }
-        }
-    }
-}
