@@ -40,38 +40,70 @@ class ProxyWSClient:
                            "sub": api_key}, private_key, algorithm="ES256")
         await self.__write({"authenticate": {"user_tag": user_tag, "credentials_secret": token}})
 
-    async def send_multi_leg_order(self, user_tag, side, price, quantity, legs):
+    async def send_multi_leg_order(self, side, price, quantity, legs):
         await self.__write({
             "new_order": {
+                # Send market id of 0 for firm orders. Send 255 for indicative orders (RFQs)
                 "market_id": "0",
+                # buy or sell
                 "side": side,
+                # Limit orders are always GTC (good till cancelled)
                 "type": "LIMIT",
                 "time_in_force": "GTC",
+                # The API expect a floating point quantity sent as string
                 "quantity": str(quantity),
                 "minimum_quantity": "0.0",
+                # The API expect a floating point price sent as string
                 "price": price,
-                "client_order_id": str(utils.time.time_us()) + user_tag,
-                # valid for 10 minutes, "recv_window": "2" -> valid for 20 minutes etc ...
+                # GUID for the order chosen by the client
+                "client_order_id": str(utils.time.time_us()),
+                # Number of 10 min exchange cycles, the order will be active for
+                # "recv_window": "1" -> valid for 10 minutes
+                # "recv_window": "2" -> valid for 20 minutes etc ...
                 "recv_window": "1",
+                # Current UTC timestamp
                 "timestamp": str(utils.time.time_us()),
+                # Array of legs in {"sym": "BTC-20220902-17000P", "ratio": "1"} format
+                # sym -> Symbol as string and ratio -> integer as string
                 "legs": legs,
-                "user_tag": user_tag
+                # Request tag identifier
+                "user_tag": "not in use"
             }
         })
 
-    async def send_single_leg_order(self, user_tag, side, price, quantity, symbol):
+    async def send_single_leg_order(self, side, price, quantity, symbol):
         await self.__write({
             "new_order": {
+                # Send market id of 0 for firm orders. Send 255 for indicative orders (RFQs)
                 "market_id": "0",
+                # buy or sell
                 "side": side,
+                # Limit orders are always GTC (good till cancelled)
                 "type": "LIMIT",
                 "time_in_force": "GTC",
+                # The API expect a floating point quantity sent as string
                 "quantity": str(quantity),
+                # The API expect a floating point price sent as string
                 "price": price,
-                "client_order_id": str(utils.time.time_us()) + user_tag,
+                # GUID for the order chosen by the client
+                "client_order_id": str(utils.time.time_us()),
+                # Number of 10 min exchange cycles, the order will be active for
+                # "recv_window": "1" -> valid for 10 minutes
+                # "recv_window": "2" -> valid for 20 minutes etc ...
                 "recv_window": "144",  # 1 day = 24 * 6 * (10min cycles)
+                # Current UTC timestamp
                 "timestamp": str(utils.time.time_us()),
+                # Symbol as string. e.g. `BTC-USD-PERPETUAL`
                 "symbol": symbol,
+                # Request tag identifier
+                "user_tag": "not in use"
+            }
+        })
+
+    async def fetch_positions(self, user_tag):
+        await self.__write({
+            "position_info": {
+                # Request tag identifier
                 "user_tag": user_tag
             }
         })
@@ -87,15 +119,18 @@ class ProxyWSClient:
         return await self.recv_queue.get()
 
     async def register_for_rfqs(self, tag):
+        # After calling this method, the server will start streaming RFQs to the client.
         await self.__write({"register_for_rfqs": {"user_tag": tag}})
 
     async def deregister_for_rfqs(self, tag):
+        # After calling this method, the server will stop streaming RFQs to the client.
         await self.__write({"deregister_for_rfqs": {"user_tag": tag}})
 
     async def get_entities(self, user_tag):
+        # Request to fetch all entities tradeable on the exchange
         await self.__write({
             "entities_and_rules_request": {
-                "order_id": "1234567",
+                # Request tag identifier
                 "user_tag": user_tag
             }
         })
@@ -151,6 +186,7 @@ class ProxyWSClient:
         server_timestamp = int(server_message.body()["server_utc_timestamp"])
         self.logger.debug("server latency: %sus",
                           client_timestamp - server_timestamp)
+        # The server expects a heartbeat every 5 seconds
         await self.__write(generate_heartbeat())  # respond
 
     server_message_handlers = {
@@ -222,3 +258,8 @@ class MessageHandler:
             raise RuntimeError("connection disconnected")
         assert (self._message_type_handlers.get(msg_type) is None)
         self._message_type_handlers[msg_type] = handler
+
+    def unregister_handler(self, msg_type: server.MessageType):
+        if self._cancelled:
+            raise RuntimeError("connection disconnected")
+        self._message_type_handlers.pop(msg_type, None)

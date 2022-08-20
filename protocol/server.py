@@ -42,6 +42,11 @@ f_entities_and_rules_response_schema = open(
 entities_and_rules_response_schema = json.load(
     f_entities_and_rules_response_schema)
 
+f_positions_response_schema = open(
+    'json-schema/web-socket-interface/positions/position-response.json')
+positions_response_schema = json.load(
+    f_positions_response_schema)
+
 
 class MessageType(enum.Enum):
     command_response = 1
@@ -54,6 +59,7 @@ class MessageType(enum.Enum):
     order_accepted = 8
     execution = 9
     entities_and_rules_response = 10
+    positions_response = 11
 
 
 class ServerMessage:
@@ -101,6 +107,8 @@ def validate_message(msg_type: MessageType, body: dict):
             return validate(instance=body, schema=execution_schema)
         case MessageType.entities_and_rules_response:
             return validate(instance=body, schema=entities_and_rules_response_schema)
+        case MessageType.positions_response:
+            return validate(instance=body, schema=positions_response_schema)
         case _:
             err = "no validator for supported message type: {}".format(
                 msg_type)
