@@ -1,7 +1,8 @@
 import asyncio
 import json
 import sys
-from examples.websocket_rfq import run
+from examples.listen_and_respond_to_rfqs import listen_and_respond_to_rfqs
+from examples.place_orders import place_orders
 
 
 def main():
@@ -23,7 +24,15 @@ def main():
 
     loop = asyncio.new_event_loop()
     asyncio.set_event_loop(loop)
-    asyncio.ensure_future(run(cfg), loop=loop)
+
+    # 1.
+    # Example code to fetch entities, listen and respond to RFQs
+    asyncio.ensure_future(listen_and_respond_to_rfqs(cfg), loop=loop)
+
+    # 2.
+    # Example code to place orders
+    # asyncio.ensure_future(place_orders(cfg), loop=loop)
+
     loop.run_forever()
 
     return 0

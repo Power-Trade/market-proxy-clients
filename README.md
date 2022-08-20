@@ -24,35 +24,32 @@ STAGING: https://powertrade-web-staging.web.app/trade/options/BTC/
 
 - Sign up
 - Click on the accout profile menu in the top right and choose `API Keys`
-- Generate a key to use inside `main.py`
+- Generate a key to use inside your JSON config file piped inside the app
 - Fund your account with the `Request Test Assets` item in the same account profile menu
 
 ## Documentation
 
 Power Trade's Market Proxy API: https://api-docs-5180b.web.app/
 
-## Application flow
+## Application flows
 
-As per `./examples/websocket_rfq.py`
+(Check `./main.py` to see which flow is being executed when you run the app)
+
+1. As per `./examples/listen_and_respond_to_rfqs.py`
 
 - Connect to the ws endpoint: https://api-docs-5180b.web.app/docs/environments
 - Authenticate using your JWT generate from the configuration: https://api-docs-5180b.web.app/docs/web-socket-interface/authenticate-message
 - Fetch all of Power Trades tradeable symbols: https://api-docs-5180b.web.app/docs/web-socket-interface/entities-and-rules/entities-and-rules-request
 - Listen to RFQs on the platform: https://api-docs-5180b.web.app/docs/web-socket-interface/rfq/register-for-rfq
--
+- Respond to an RFQ by placing a firm order with the same structure as the RFQ
 
-## TODO
+2. Place orders and check current positions
 
-### Short-term
+- Connect to the ws endpoint: https://api-docs-5180b.web.app/docs/environments
+- Authenticate using your JWT generate from the configuration: https://api-docs-5180b.web.app/docs/web-socket-interface/authenticate-message
+- Place an Option, a Perpetual and a Spot order https://api-docs-5180b.web.app/docs/web-socket-interface/orders/new-order
+- Fetch positions https://api-docs-5180b.web.app/docs/web-socket-interface/positions/position-request
 
-- [x] Add basic websocket client which supports authentication
-- [x] Support subscribing to RFQ orders (subscription supported, messages not handled gracefully)
-- [x] Add basic websocket client example to showcase authentication/rfq subscription)
-- [x] Add server order/subscribe messages (includes RFQ).
-- [x] Support requesting exchange entities/rules
-- [x] Add ws support to place/manage orders
+## API JSON Schema
 
-### Long-term
-
-- [ ] Add basic HTTP client
-- [ ] Add basic HTTP client usage example
+The `./json-schema/` folder contains all of the requests and responses from the Market Proxy. To be used in addition to the documentation.
