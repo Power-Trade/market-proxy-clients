@@ -19,8 +19,12 @@ This project uses pattern matching, introduced in Python 3.10
 To generate your own config, you need to go to PowerTrade's web application:
 
 DEV: https://powertrade-web-dev.web.app/trade/options/BTC/
+
 TEST: https://powertrade-web-test.web.app/trade/options/BTC/
+
 STAGING: https://powertrade-web-staging.web.app/trade/options/BTC/
+
+PRODUCTION: https://app.power.trade/trade/options/BTC/
 
 - Sign up
 - Click on the accout profile menu in the top right and choose `API Keys`
