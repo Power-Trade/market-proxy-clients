@@ -104,13 +104,13 @@ async def place_orders(cfg):
     #    cf `./listen_and_respond_to_rfqs.py`
     #    or https://api-docs-5180b.web.app/docs/web-socket-interface/entities-and-rules/entities-and-rules-response
 
-    # # Place OPTION order
-    await place_order(client, mh, "buy", "4000.0", "0.1", "BTC-20220826-21000C")
+    # Place OPTION order
+    await place_order(client, mh, "buy", "10000.0", "0.1", "BTC-20230630-21000C")
 
-    # # Place PERPETUAL order
+    # Place PERPETUAL order
     await place_order(client, mh, "sell", "825.0", "10.0", "BTC-USD-PERPETUAL")
 
-    # # Place SPOT order
+    # Place SPOT order
     await place_order(client, mh, "buy", "37148.0", "1.0", "BTC-USD")
 
     # Fetching positions

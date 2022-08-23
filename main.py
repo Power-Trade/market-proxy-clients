@@ -3,6 +3,13 @@ import json
 import sys
 from examples.listen_and_respond_to_rfqs import listen_and_respond_to_rfqs
 from examples.place_orders import place_orders
+import inquirer
+import logging
+
+logger = logging.getLogger()
+
+question_1_rfq = "Listen and Respond to RFQs"
+question_2_single_orders = "Place Single Leg Orders"
 
 
 def main():
@@ -25,13 +32,19 @@ def main():
     loop = asyncio.new_event_loop()
     asyncio.set_event_loop(loop)
 
+    answer = inquirer.list_input("Flow selection",
+                                 choices=[question_1_rfq, question_2_single_orders])
+
+    logger.info("Selected Flow: %s", answer)
     # 1.
     # Example code to fetch entities, listen and respond to RFQs
-    asyncio.ensure_future(listen_and_respond_to_rfqs(cfg), loop=loop)
+    if answer == question_1_rfq:
+        asyncio.ensure_future(listen_and_respond_to_rfqs(cfg), loop=loop)
 
     # 2.
     # Example code to place orders
-    # asyncio.ensure_future(place_orders(cfg), loop=loop)
+    if answer == question_2_single_orders:
+        asyncio.ensure_future(place_orders(cfg), loop=loop)
 
     loop.run_forever()
 

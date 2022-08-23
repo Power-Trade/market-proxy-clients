@@ -3,3 +3,4 @@ cryptography
 jsonschema==4.10.0
 PyJWT==2.4.0
 websockets==10.3
+inquirer==2.10
