@@ -1,5 +1,6 @@
 {
   "api_key": "9cfc9c3da4185d8f03d9f7962fec33d6",
   "private_key": "-----BEGIN EC PRIVATE KEY-----\nMHcCAQEEIPQ/pSkixlGLBN5F6/hI7KsenK87FHgHG2dH1PQevUSxoAoGCCqGSM49\nAwEHoUQDQgAEzi3e/genFNJ7flOwUiuA1j5sv5wvsOhaeX2Wh3O1LOC5AHETJgoM\ntAZBmql9DA1hCwb4EIfa5OBdUEBjD3qQYw==\n-----END EC PRIVATE KEY-----",
-  "ws_url": "wss://proxy.dev.ptlab.link"
+  "ws_url": "wss://proxy.dev.ptlab.link",
+  "http_url": "https://proxy.dev.ptlab.link"
 }
