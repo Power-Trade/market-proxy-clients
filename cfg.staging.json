@@ -1,5 +1,6 @@
 {
   "api_key": "c2554a11d0f27a9208278ff6649f70eb",
   "private_key": "-----BEGIN EC PRIVATE KEY-----\nMHcCAQEEIORjLlCLWeYEa+ucy2QsM2A7Z7DA3WonZOnr/V6EvI6loAoGCCqGSM49\nAwEHoUQDQgAELYJenygoIyKZz80PUau/16dlYMWrrAa/FPakMWFJJ+5i49POmcB6\nyFMKWFghCx+145ZnWE9rJ7PksEh8szGIzg==\n-----END EC PRIVATE KEY-----",
-  "ws_url": "wss://proxy.staging.ptlab.link"
+  "ws_url": "wss://proxy.staging.ptlab.link",
+  "http_url": "https://proxy.staging.ptlab.link"
 }

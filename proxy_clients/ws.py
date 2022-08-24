@@ -1,8 +1,8 @@
 import websockets
 import asyncio
 import json
+from utils.access_token import generate_access_token
 import utils.time
-import jwt
 import protocol.server as server
 
 import logging
@@ -33,11 +33,7 @@ class ProxyWSClient:
         asyncio.ensure_future(self.__heartbeat_timer())
 
     async def authenticate(self, user_tag, api_key, private_key):
-        now = utils.time.time_s()
-        # Generate JWT with 1 min expiry
-        # All PowerTrade api keys use the same algo 'ES256'
-        token = jwt.encode({"exp": now + 60, "iat": now,
-                           "sub": api_key}, private_key, algorithm="ES256")
+        token = generate_access_token(api_key, private_key)
         await self.__write({"authenticate": {"user_tag": user_tag, "credentials_secret": token}})
 
     async def send_multi_leg_order(self, side, price, quantity, legs):
