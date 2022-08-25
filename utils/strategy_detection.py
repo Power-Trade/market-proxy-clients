@@ -2,7 +2,7 @@
 
 import operator
 
-from utils.strategies import get_leg_fingerprint, get_strategies
+from utils.strategies import get_leg_fingerprint, STRATEGIES
 
 
 def leg_from_string(legString: str):
@@ -36,7 +36,7 @@ def leg_from_string(legString: str):
         return None
 
 
-def get_atm_strike(legs):
+def get_mid_strike(legs):
     strikes = [leg["strike"] for leg in legs]
 
     for idx, x in enumerate(strikes):
@@ -52,7 +52,6 @@ def get_strategy_name(symbol: str):
 
     legs = list(map(leg_from_string, symbol.split("/")))
 
-    print(legs)
     # Check that we only have option legs
     for leg in legs:
         if leg is None or leg["productType"] != "option" or leg["strike"] is None:
@@ -62,25 +61,21 @@ def get_strategy_name(symbol: str):
     legs.sort(key=operator.itemgetter('strike'))
     legs.sort(key=operator.itemgetter('optionType'), reverse=True)
 
-    print(legs)
-    at_the_money_strike = get_atm_strike(legs)
-    is_call_at_the_money = False
-    is_put_at_the_money = False
+    at_the_mid_strike = get_mid_strike(legs)
+    is_call_at_the_mid = False
+    is_put_at_the_mid = False
 
     for leg in legs:
-        if leg["optionType"] == "call" and leg["strike"] == at_the_money_strike:
-            is_call_at_the_money = True
-        if leg["optionType"] == "put" and leg["strike"] == at_the_money_strike:
-            is_put_at_the_money = True
+        if leg["optionType"] == "call" and leg["strike"] == at_the_mid_strike:
+            is_call_at_the_mid = True
+        if leg["optionType"] == "put" and leg["strike"] == at_the_mid_strike:
+            is_put_at_the_mid = True
 
-    is_structure_at_the_money = at_the_money_strike != 0 and is_call_at_the_money and is_put_at_the_money
+    is_structure_at_the_mid = at_the_mid_strike != 0 and is_call_at_the_mid and is_put_at_the_mid
     fingerprint = "".join([get_leg_fingerprint(
-        leg["ratio"], leg["optionType"], is_structure_at_the_money and leg["strike"] == at_the_money_strike) for leg in legs])
+        leg["ratio"], leg["optionType"], is_structure_at_the_mid and leg["strike"] == at_the_mid_strike) for leg in legs])
 
-    print(fingerprint)
-
-    strategies = get_strategies()
-    strategy = next((s for s in strategies if s["fingerprint"]
+    strategy = next((s for s in STRATEGIES if s["fingerprint"]
                     == fingerprint or s["inverted_fingerprint"] == fingerprint), None)
 
     if strategy is None:
