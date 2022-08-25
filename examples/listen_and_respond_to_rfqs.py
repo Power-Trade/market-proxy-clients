@@ -3,6 +3,7 @@ import proxy_clients.ws as ws_client
 import asyncio
 import logging
 from utils.future import async_result
+from utils.strategy_detection import get_strategy_name
 
 logging.getLogger('asyncio').setLevel(logging.WARNING)
 
@@ -110,6 +111,10 @@ async def handle_order_added_message(message: server.ServerMessage, client: ws_c
     # Check if indicative order
     if (body["market_id"] == "255"):
         logging.info("RFQ received for %s %s", body["symbol"], body["side"])
+
+        logging.info("Strategy detected: %s",
+                     get_strategy_name(body["symbol"]))
+
         await place_firm_multi_leg_order(client, body)
 
 
