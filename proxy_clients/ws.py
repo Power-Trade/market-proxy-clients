@@ -96,6 +96,35 @@ class ProxyWSClient:
             }
         })
 
+    async def send_single_leg_rfq(self, side, quantity, symbol):
+        await self.__write({
+            "new_order": {
+                # Send market id of 0 for firm orders. Send 255 for indicative orders (RFQs)
+                "market_id": "none",
+                # buy or sell
+                "side": side,
+                # Limit orders are always GTC (good till cancelled)
+                "type": "LIMIT",
+                "time_in_force": "GTC",
+                # The API expect a floating point quantity sent as string
+                "quantity": str(quantity),
+                # The API expect a floating point price sent as string
+                "price": "1000.0",
+                # GUID for the order chosen by the client
+                "client_order_id": str(utils.time.time_us()),
+                # Number of 10 min exchange cycles, the order will be active for
+                # "recv_window": "1" -> valid for 10 minutes
+                # "recv_window": "2" -> valid for 20 minutes etc ...
+                "recv_window": "2",  # 1 day = 24 * 6 * (10min cycles)
+                # Current UTC timestamp
+                "timestamp": str(utils.time.time_us()),
+                # Symbol as string. e.g. `BTC-USD-PERPETUAL`
+                "symbol": symbol,
+                # Request tag identifier
+                "user_tag": "not in use"
+            }
+        })
+
     async def fetch_positions(self, user_tag):
         await self.__write({
             "position_info": {
