@@ -11,6 +11,9 @@ logging.basicConfig(
     level=logging.DEBUG,
     datefmt='%Y-%m-%d %H:%M:%S')
 
+# store number of active RFQs per symbol
+rfqs_by_symbol = {}
+
 
 async def do_auth(client: ws_client.ProxyWSClient, mh: ws_client.MessageHandler, cfg):
     # Authenticate the connection
@@ -32,11 +35,10 @@ async def do_auth(client: ws_client.ProxyWSClient, mh: ws_client.MessageHandler,
 
 async def handle_snapshot(snapshot: server.ServerMessage, client: ws_client.ProxyWSClient):
     assert (snapshot.type() == server.MessageType.snapshot)
-    logging.info("Snapshot arrived!\n%s", snapshot.body())
 
 
 async def handle_order_message(message: server.ServerMessage, client: ws_client.ProxyWSClient):
-    # Message type one of order_added, order_deleted, order_updated, order_executed
+    # Message type one of order_updated, order_executed
     logging.info(
         "Order message handled\n%s [%s]", message.type().name, message.body())
 
@@ -44,7 +46,34 @@ async def handle_order_message(message: server.ServerMessage, client: ws_client.
 async def place_rfq(client: ws_client.ProxyWSClient, mh: ws_client.MessageHandler, side, quantity, instrument):
     await client.send_single_leg_rfq(side, quantity, instrument)
 
-    logging.info("RFQ placement success")
+
+async def handle_order_added_message(message: server.ServerMessage, client: ws_client.ProxyWSClient):
+    body = message.body()
+    rfq_id = body["side"] + "-" + body["symbol"]
+    existing_rfqs = rfqs_by_symbol[rfq_id] if rfq_id in rfqs_by_symbol else 0
+    rfqs_by_symbol[rfq_id] = existing_rfqs + 1
+
+    logging.info(
+        "RFQ Added for [%s]. Total active %s RFQs: %i", rfq_id, rfq_id, rfqs_by_symbol[rfq_id])
+
+    if rfqs_by_symbol[rfq_id] == 1:
+        logging.info("Start Quoting %s", rfq_id)
+    else:
+        logging.info("Continue Quoting %s", rfq_id)
+
+
+async def handle_order_deleted_message(message: server.ServerMessage, client: ws_client.ProxyWSClient):
+    body = message.body()
+    rfq_id = body["side"] + "-" + body["symbol"]
+    rfqs_by_symbol[rfq_id] = rfqs_by_symbol[rfq_id] - 1
+
+    logging.info(
+        "RFQ expired for [%s]. Total active %s RFQs: %i", rfq_id, rfq_id, rfqs_by_symbol[rfq_id])
+
+    if rfqs_by_symbol[rfq_id] == 0:
+        logging.info("Stop Quoting %s", rfq_id)
+    else:
+        logging.info("Continue Quoting %s", rfq_id)
 
 
 async def subscribe_to_rfqs(client: ws_client.ProxyWSClient, mh: ws_client.MessageHandler):
@@ -61,7 +90,6 @@ async def subscribe_to_rfqs(client: ws_client.ProxyWSClient, mh: ws_client.Messa
     if rfq_resp.body()["error_code"] != "0":
         logging.error("rfq failed\n%s", rfq_resp)
         raise RuntimeError("rfq failed")
-    logging.info("rfq success")
 
 
 async def place_rfqs(cfg):
@@ -83,24 +111,40 @@ async def place_rfqs(cfg):
 
     # Before placing the order, register order message handlers
     mh.register_handler(server.MessageType.snapshot, handle_snapshot)
-    mh.register_handler(server.MessageType.order_added,
-                        handle_order_message)
-    mh.register_handler(server.MessageType.order_deleted, handle_order_message)
     mh.register_handler(server.MessageType.order_updated, handle_order_message)
     mh.register_handler(server.MessageType.order_executed,
                         handle_order_message)
     mh.register_handler(server.MessageType.order_accepted,
                         handle_order_message)
 
+    # The order added handler will increment the number of active RFQs
+    # That's a cue to start quoting
+    mh.register_handler(server.MessageType.order_added,
+                        handle_order_added_message)
+
+    # The order deleted handler will decrement the number of active RFQs
+    # That's a cue to stop quoting when it reaches 0
+    mh.register_handler(server.MessageType.order_deleted,
+                        handle_order_deleted_message)
+
     # Start streaming RFQs
     await subscribe_to_rfqs(client, mh)
 
-    await asyncio.sleep(5)
+    await asyncio.sleep(3)
 
     logging.info("place rfq")
 
+    # RFQs will be placed by someone else, this is only for demonstration purposes
+    await place_rfq(client, mh, "buy", "10.0", "BTC-20230630-21000C")
+    await place_rfq(client, mh, "sell", "10.0", "BTC-20230630-21000C")
+
+    # 5 seconds later, another RFQ comes in
+    await place_rfq(client, mh, "sell", "10.0", "BTC-20230630-22000P")
+
+    # 5 seconds later, another RFQ comes in for the 21000 Call
+    await asyncio.sleep(5)
     await place_rfq(client, mh, "buy", "10.0", "BTC-20230630-21000C")
 
-    # Loop forever
+    # Loop forever while waiting for RFQs to expire
     while True:
         await asyncio.sleep(10)
