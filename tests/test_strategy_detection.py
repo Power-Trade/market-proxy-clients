@@ -69,3 +69,9 @@ def test_put_butterfly_spread():
         "BTC-20220826-22000P@-2/BTC-20220826-21500P@1/BTC-20220826-22500P@1")
     assert s["longName"] == "Put Butterfly Spread"
     assert s["shortName"] == "PFlySpd"
+
+
+def test_1_sell_leg_not_put_butterfly_spread():
+    s = get_strategy_name(
+        "BTC-20220826-22000P@-1/BTC-20220826-21500P@1/BTC-20220826-22500P@1")
+    assert s is None
