@@ -1,8 +1,7 @@
 
 def get_leg_fingerprint(ratio: int, optionType: str, is_atm: bool) -> str:
-    sign = "-1" if ratio < 0 else "1"
     t = "ATM" if is_atm else ""
-    return sign + t + optionType
+    return str(ratio) + t + optionType
 
 
 BASE_STRATEGIES = [
