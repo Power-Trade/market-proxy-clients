@@ -8,4 +8,4 @@ def generate_access_token(api_key, private_key):
     # Generate JWT with 1 min expiry
     # All PowerTrade api keys use the same algo 'ES256'
     return jwt.encode({"exp": now + 60, "iat": now,
-                       "sub": api_key}, private_key, algorithm="ES256")
+                       "sub": api_key, "client": "api"}, private_key, algorithm="ES256")
