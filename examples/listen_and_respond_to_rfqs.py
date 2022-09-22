@@ -109,7 +109,7 @@ async def handle_order_added_message(message: server.ServerMessage, client: ws_c
         "Order added message handled\n%s [%s]", message.type().name, body)
 
     # Check if indicative order
-    if (body["market_id"] == "255"):
+    if (body["market_id"] == "none"):
         logging.info("RFQ received for %s %s", body["symbol"], body["side"])
 
         logging.info("Strategy detected: %s",

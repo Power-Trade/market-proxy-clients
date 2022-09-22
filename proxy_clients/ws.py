@@ -56,7 +56,7 @@ class ProxyWSClient:
                 # Number of 10 min exchange cycles, the order will be active for
                 # "recv_window": "1" -> valid for 10 minutes
                 # "recv_window": "2" -> valid for 20 minutes etc ...
-                "recv_window": "1",
+                "recv_window": "4",
                 # Current UTC timestamp
                 "timestamp": str(utils.time.time_us()),
                 # Array of legs in {"sym": "BTC-20220902-17000P", "ratio": "1"} format
