@@ -1,0 +1,6 @@
+{
+  "apiKey": "api key goes here",
+  "privateKey": "-----BEGIN EC PRIVATE KEY-----\n[private key goes here]\n-----END EC PRIVATE KEY-----",
+  "wsUrl": "wss://proxy.staging.ptlab.link",
+  "httpUrl": "https://proxy.staging.ptlab.link"
+}
