@@ -63,13 +63,6 @@ def test_risk_reversal():
     assert s["shortName"] == "RRev"
 
 
-def test_iron_butterfly():
-    s = get_strategy_name(
-        "BTC-20220826-22000P@1/BTC-20220826-22000C@1/BTC-20220826-21500P@-1/BTC-20220826-22500C@-1")
-    assert s["longName"] == "Iron Butterfly"
-    assert s["shortName"] == "IrnFly"
-
-
 def test_call_condor():
     s = get_strategy_name(
         "BTC-20220826-23000C@-1/BTC-20220826-21000C@-1/BTC-20220826-21500C@1/BTC-20220826-22500C@1")
@@ -81,13 +74,6 @@ def test_put_condor():
         "BTC-20220826-23000P@-1/BTC-20220826-21000P@-1/BTC-20220826-21500P@1/BTC-20220826-22500P@1")
     assert s["longName"] == "Put Condor"
     assert s["shortName"] == "PCdr"
-
-
-def test_iron_condor():
-    s = get_strategy_name(
-        "BTC-20220826-23000C@1/BTC-20220826-21000P@1/BTC-20220826-21500P@-1/BTC-20220826-22500C@-1")
-    assert s["longName"] == "Iron Condor"
-    assert s["shortName"] == "IrnCdr"
 
 
 def test_call_butterfly_spread():

@@ -62,16 +62,6 @@ BASE_STRATEGIES = [
         ],
     },
     {
-        "longName": "Iron Butterfly",
-        "shortName": "IrnFly",
-        "legs": [
-            {"optionType": "put", "price": "OTM", "ratio": 1},
-            {"optionType": "put", "price": "ATM", "ratio": -1},
-            {"optionType": "call", "price": "ATM", "ratio": -1},
-            {"optionType": "call", "price": "OTM", "ratio": 1},
-        ],
-    },
-    {
         "longName": "Call Condor",
         "shortName": "CCdr",
         "legs": [
@@ -89,16 +79,6 @@ BASE_STRATEGIES = [
             {"optionType": "put", "price": "OTM", "ratio": -1},
             {"optionType": "put", "price": "ATM", "ratio": -1},
             {"optionType": "put", "price": "ITM", "ratio": 1},
-        ],
-    },
-    {
-        "longName": "Iron Condor",
-        "shortName": "IrnCdr",
-        "legs": [
-            {"optionType": "put", "price": "X_OTM", "ratio": 1},
-            {"optionType": "put", "price": "OTM", "ratio": -1},
-            {"optionType": "call", "price": "OTM", "ratio": -1},
-            {"optionType": "call", "price": "X_OTM", "ratio": 1},
         ],
     },
     {
