@@ -51,6 +51,7 @@ def get_strategy_name(symbol: str):
         return None
 
     legs = list(map(leg_from_string, symbol.split("/")))
+    is_multiple_expiry = any(leg["expiry"] != legs[0]["expiry"] for leg in legs)
 
     # Check that we only have option legs
     for leg in legs:
@@ -72,7 +73,7 @@ def get_strategy_name(symbol: str):
             is_put_at_the_mid = True
 
     is_structure_at_the_mid = at_the_mid_strike != 0 and is_call_at_the_mid and is_put_at_the_mid
-    fingerprint = "".join([get_leg_fingerprint(
+    fingerprint = ("N_" if is_multiple_expiry else "").join([get_leg_fingerprint(
         leg["ratio"], leg["optionType"], is_structure_at_the_mid and leg["strike"] == at_the_mid_strike) for leg in legs])
 
     strategy = next((s for s in STRATEGIES if s["fingerprint"]
