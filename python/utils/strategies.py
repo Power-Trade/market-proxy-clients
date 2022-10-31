@@ -82,8 +82,8 @@ BASE_STRATEGIES = [
         ],
     },
     {
-        "longName": "Call Butterfly Spread",
-        "shortName": "CFlySpd",
+        "longName": "Call Butterfly",
+        "shortName": "CFly",
         "legs": [
             {"optionType": "call", "price": "ITM", "ratio": 1},
             {"optionType": "call", "price": "ATM", "ratio": -2},
@@ -91,8 +91,8 @@ BASE_STRATEGIES = [
         ],
     },
     {
-        "longName": "Put Butterfly Spread",
-        "shortName": "PFlySpd",
+        "longName": "Put Butterfly",
+        "shortName": "PFly",
         "legs": [
             {"optionType": "put", "price": "OTM", "ratio": 1},
             {"optionType": "put", "price": "ATM", "ratio": -2},
