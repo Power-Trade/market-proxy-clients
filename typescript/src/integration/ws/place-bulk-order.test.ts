@@ -1,3 +1,5 @@
+import { describe, expect, test, beforeAll, afterAll } from '@jest/globals';
+
 import getMarketProxyApi, { MarketProxyApi } from '../../market-proxy/api';
 import { getConfig } from '../../market-proxy/base/config';
 import { OrderRequest, TradeableEntity } from '../../market-proxy/types';
@@ -69,6 +71,7 @@ describe('[WS] Single Leg Placement', () => {
       marketType: 'firm',
       isMultiLeg: false,
       isMarketProxyOrder: true,
+      legs: undefined,
     });
 
     expect(orders).toContainEqual({
@@ -85,6 +88,7 @@ describe('[WS] Single Leg Placement', () => {
       marketType: 'firm',
       isMultiLeg: false,
       isMarketProxyOrder: true,
+      legs: undefined,
     });
 
     expect(orders).toContainEqual({
@@ -101,6 +105,7 @@ describe('[WS] Single Leg Placement', () => {
       marketType: 'firm',
       isMultiLeg: false,
       isMarketProxyOrder: true,
+      legs: undefined,
     });
 
     await api.cancelAllOpenOrdersRest();

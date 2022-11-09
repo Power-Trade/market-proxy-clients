@@ -1,3 +1,5 @@
+import { expect, test } from '@jest/globals';
+
 import { getConfig } from '../../market-proxy/base/config';
 import getMarketProxyApi from '../../market-proxy/api';
 
