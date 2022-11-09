@@ -1,3 +1,5 @@
+import { expect, test } from '@jest/globals';
+
 import { nanoid } from 'nanoid';
 import getMarketProxyApi from '../../market-proxy/api';
 import { getConfig } from '../../market-proxy/base/config';
@@ -25,8 +27,6 @@ test('[REST] fetch balances', async () => {
   await sleep(500);
 
   const response = await api.positionsRest();
-
-  console.log(JSON.stringify(response));
 
   expect(response.length).toBeTruthy();
   expect(response.find((p) => p.symbol === 'BTC-USD-PERPETUAL')).toBeTruthy();
