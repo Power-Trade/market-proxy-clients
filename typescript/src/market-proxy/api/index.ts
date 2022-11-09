@@ -20,6 +20,7 @@ import { refreshRfqInterestRest, RefreshRfqInterestRestArgs } from './rest/refre
 import { orderbookRest, OrderbookRestArgs } from './rest/orderbookRest';
 import { placeOrderRest } from './rest/placeOrderRest';
 import { refreshRfqInterestWs } from './ws/refreshRfqInterestWs';
+import { subscribe, SubscribeWsArgs } from './ws/subscribe';
 
 export class MarketProxyApi {
   public ws: MarketProxyWs;
@@ -53,6 +54,8 @@ export class MarketProxyApi {
 
   public refreshRfqInterestWs = (args: RefreshRfqInterestRestArgs) =>
     refreshRfqInterestWs(this.ws, args);
+
+  public subscribeWs = (args: SubscribeWsArgs) => subscribe(this.ws, args);
 
   // REST
   public apiTimeRest = async () => await apiTimeRest(this.ws);

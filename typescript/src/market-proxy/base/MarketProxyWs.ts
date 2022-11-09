@@ -108,6 +108,10 @@ class MarketProxyWs {
     if (!this.onMessageListeners.find((cb) => cb === callback)) {
       this.onMessageListeners.push(callback);
     }
+
+    return () => {
+      this.removeOnMessageListener(callback);
+    };
   };
 
   public removeOnMessageListener = (callback: OnMessageFn) => {
