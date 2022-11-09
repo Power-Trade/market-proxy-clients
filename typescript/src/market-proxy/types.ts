@@ -27,7 +27,8 @@ export type RequestName =
   | 'cancel_all_orders'
   | 'entities_and_rules_request'
   | 'refresh_interest'
-  | 'cancel_order';
+  | 'cancel_order'
+  | 'subscribe';
 
 interface OrderLeg {
   symbol?: string;
@@ -240,3 +241,5 @@ export type OrderbookRestResponseRaw = {
     quantity: string;
   }[];
 };
+
+export type SubscribeTypeRaw = 'snap_full_updates' | 'snap_only' | 'snap_with_deltas';
