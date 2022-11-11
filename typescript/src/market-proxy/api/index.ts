@@ -1,5 +1,5 @@
 import MarketProxyWs from '../base/MarketProxyWs';
-import { Config, OrderRequest } from '../types';
+import { Config, OrderRequest, RfqAddedRaw, RfqRemovedRaw, SnapshotRaw } from '../types';
 import { generateAccessToken } from '../utils/cryptography';
 import { apiTimeRest } from './rest/apiTimeRest';
 import { authenticate } from './ws/authenticate';
@@ -20,7 +20,9 @@ import { refreshRfqInterestRest, RefreshRfqInterestRestArgs } from './rest/refre
 import { orderbookRest, OrderbookRestArgs } from './rest/orderbookRest';
 import { placeOrderRest } from './rest/placeOrderRest';
 import { refreshRfqInterestWs } from './ws/refreshRfqInterestWs';
-import { subscribe, SubscribeWsArgs } from './ws/subscribe';
+import { subscribe, SubscribeWsArgs } from './ws/subscribeWs';
+import { startListeningForRfqsWs } from './ws/startListeningForRfqsWs';
+import { stopListeningForRfqsWs } from './ws/stopListeningForRfqsWs';
 
 export class MarketProxyApi {
   public ws: MarketProxyWs;
@@ -36,14 +38,14 @@ export class MarketProxyApi {
     });
   }
 
-  public close = async () => await this.ws.close();
+  public close = () => this.ws.close();
 
   // WebSocket
-  public authenticate = async () => await authenticate(this.ws);
+  public authenticate = () => authenticate(this.ws);
 
-  public fetchEntitiesAndRulesWs = async () => await fetchEntitiesAndRulesWs(this.ws);
+  public fetchEntitiesAndRulesWs = () => fetchEntitiesAndRulesWs(this.ws);
 
-  public placeOrderWs = async (order: OrderRequest) => await placeOrderWs(this.ws, order);
+  public placeOrderWs = (order: OrderRequest) => placeOrderWs(this.ws, order);
 
   public placeBulkOrderWs = (orders: OrderRequest[]) => placeBulkOrderWs(this.ws, orders);
 
@@ -57,33 +59,63 @@ export class MarketProxyApi {
 
   public subscribeWs = (args: SubscribeWsArgs) => subscribe(this.ws, args);
 
+  public startListeningForRfqsWs = () => startListeningForRfqsWs(this.ws);
+
+  public stopListeningForRfqsWs = () => stopListeningForRfqsWs(this.ws);
+
   // REST
-  public apiTimeRest = async () => await apiTimeRest(this.ws);
+  public apiTimeRest = () => apiTimeRest(this.ws);
 
-  public fetchOpenOrdersRest = async () => await fetchOpenOrdersRest(this.ws);
+  public fetchOpenOrdersRest = () => fetchOpenOrdersRest(this.ws);
 
-  public cancelAllOpenOrdersRest = async () => await cancelAllOpenOrdersRest(this.ws);
+  public cancelAllOpenOrdersRest = () => cancelAllOpenOrdersRest(this.ws);
 
-  public exchangeInfoRest = async () => await exchangeInfoRest(this.ws);
+  public exchangeInfoRest = () => exchangeInfoRest(this.ws);
 
-  public deliverableInfoRest = async () => await deliverableInfoRest(this.ws);
+  public deliverableInfoRest = () => deliverableInfoRest(this.ws);
 
-  public balanceRest = async () => await balanceRest(this.ws);
+  public balanceRest = () => balanceRest(this.ws);
 
-  public positionsRest = async () => await positionsRest(this.ws);
+  public positionsRest = () => positionsRest(this.ws);
 
-  public cancelOpenOrderRest = async (args: CancelOpenOrderRestArgs) =>
-    await cancelOpenOrderRest(this.ws, args);
+  public cancelOpenOrderRest = (args: CancelOpenOrderRestArgs) =>
+    cancelOpenOrderRest(this.ws, args);
 
-  public getOrderDetailsRest = async (args: GetOrderDetailsRestArgs) =>
-    await getOrderDetailsRest(this.ws, args);
+  public getOrderDetailsRest = (args: GetOrderDetailsRestArgs) =>
+    getOrderDetailsRest(this.ws, args);
 
-  public refreshRfqInterestRest = async (args: RefreshRfqInterestRestArgs) =>
-    await refreshRfqInterestRest(this.ws, args);
+  public refreshRfqInterestRest = (args: RefreshRfqInterestRestArgs) =>
+    refreshRfqInterestRest(this.ws, args);
 
-  public orderbookRest = async (args: OrderbookRestArgs) => await orderbookRest(this.ws, args);
+  public orderbookRest = (args: OrderbookRestArgs) => orderbookRest(this.ws, args);
 
-  public placeOrderRest = async (order: OrderRequest) => await placeOrderRest(this.ws, order);
+  public placeOrderRest = (order: OrderRequest) => placeOrderRest(this.ws, order);
+
+  // Listeners
+  public onRfqAdded = (callback: (payload: RfqAddedRaw) => void) => {
+    return this.ws.addOnMessageListener({
+      callback,
+      selector: (event, payload) => {
+        return event === 'order_added' && payload?.market_id === 'none';
+      },
+    });
+  };
+
+  public onRfqRemoved = (callback: (payload: RfqRemovedRaw) => void) => {
+    return this.ws.addOnMessageListener({
+      callback,
+      selector: (event, payload) => {
+        return event === 'order_deleted' && payload?.market_id === 'none';
+      },
+    });
+  };
+
+  public onSnapshot = (callback: (payload: SnapshotRaw) => void) => {
+    return this.ws.addOnMessageListener({
+      callback,
+      selector: (event) => event === 'snapshot',
+    });
+  };
 }
 
 const getMarketProxyApi = (config: Config) => {

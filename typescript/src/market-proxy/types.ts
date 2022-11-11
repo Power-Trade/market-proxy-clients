@@ -28,6 +28,8 @@ export type RequestName =
   | 'entities_and_rules_request'
   | 'refresh_interest'
   | 'cancel_order'
+  | 'register_for_rfqs'
+  | 'deregister_for_rfqs'
   | 'subscribe';
 
 interface OrderLeg {
@@ -243,3 +245,41 @@ export type OrderbookRestResponseRaw = {
 };
 
 export type SubscribeTypeRaw = 'snap_full_updates' | 'snap_only' | 'snap_with_deltas';
+
+export type RfqAddedRaw = {
+  server_utc_timestamp: string;
+  utc_timestamp: string;
+  market_id: 'none';
+  tradeable_entity_id: string;
+  symbol: string;
+  side: Side;
+  order_id: string;
+  price: string;
+  quantity: string;
+};
+
+export type RfqRemovedRaw = {
+  server_utc_timestamp: string;
+  utc_timestamp: string;
+  market_id: 'none';
+  tradeable_entity_id: string;
+  symbol: string;
+  side: Side;
+  order_id: string;
+};
+
+export type SnapshotRawRow = {
+  price: string;
+  quantity: string;
+  orderid: string;
+  utc_timestamp: string;
+};
+
+export type SnapshotRaw = {
+  server_utc_timestamp: string;
+  market_id: string;
+  tradeable_entity_id: string;
+  symbol: string;
+  buy: SnapshotRawRow[];
+  sell: SnapshotRawRow[];
+};
