@@ -12,10 +12,10 @@
 - [x] Cancel Orders
 - [-] BLOCKED: Cancel All Orders
 - [ ] Order Executions messages
-- [ ] Order Rejection messages
+- [x] Order Rejection messages
 - [x] (De)Register for RFQs
 - [x] Refresh Interest
-- [ ] Positions
+- [x] Positions
 - [ ] Trade Messages
 
 ## REST API
