@@ -7,11 +7,9 @@ export type SubscribeWsArgs = {
   tradeableEntityId?: string;
   type: SubscribeTypeRaw;
   interval: number;
-  onSnapshot: (snapshot: any) => void;
 };
 
 export const subscribe = async (ws: MarketProxyWs, args: SubscribeWsArgs) => {
-  const unsubscribe = ws.addOnMessageListener(args.onSnapshot);
   await ws.sendTaggedRequest('subscribe', {
     market_id: '0',
     symbol: args.symbol,
@@ -20,6 +18,4 @@ export const subscribe = async (ws: MarketProxyWs, args: SubscribeWsArgs) => {
     interval: args.interval.toString(),
     user_tag: getUserTag(),
   });
-
-  return unsubscribe;
 };

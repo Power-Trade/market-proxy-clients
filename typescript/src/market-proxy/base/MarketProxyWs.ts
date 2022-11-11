@@ -4,7 +4,10 @@ import { log } from '../utils/log';
 import { getUserTag } from '../utils/userTag';
 import BaseWs from './BaseWs';
 
-type OnMessageFn = (event: string, payload: any) => void;
+type MessageListener = {
+  callback: (payload: any) => void;
+  selector: (event: string, payload: any) => boolean;
+};
 
 class MarketProxyWs {
   protected ws: BaseWs;
@@ -13,7 +16,7 @@ class MarketProxyWs {
   public authenticated = false;
   public accessToken?: string;
 
-  private onMessageListeners: OnMessageFn[] = [];
+  private onMessageListeners: MessageListener[] = [];
   private taggedHandlers: Record<
     string,
     {
@@ -101,10 +104,14 @@ class MarketProxyWs {
       delete this.orderIdHandlers[id];
     }
 
-    this.onMessageListeners.forEach((callback) => callback(event, payload[event]));
+    this.onMessageListeners.forEach((listener) => {
+      if (listener.selector(event, payload[event])) {
+        listener.callback(payload[event]);
+      }
+    });
   };
 
-  public addOnMessageListener = (callback: OnMessageFn) => {
+  public addOnMessageListener = (callback: MessageListener) => {
     if (!this.onMessageListeners.find((cb) => cb === callback)) {
       this.onMessageListeners.push(callback);
     }
@@ -114,7 +121,7 @@ class MarketProxyWs {
     };
   };
 
-  public removeOnMessageListener = (callback: OnMessageFn) => {
+  public removeOnMessageListener = (callback: MessageListener) => {
     const index = this.onMessageListeners.findIndex((cb) => cb === callback);
 
     if (index > -1) {
