@@ -30,6 +30,7 @@ export type RequestName =
   | 'cancel_order'
   | 'register_for_rfqs'
   | 'deregister_for_rfqs'
+  | 'positions'
   | 'subscribe';
 
 interface OrderLeg {
@@ -198,6 +199,12 @@ export type PositionRaw = {
   size: string;
   average_entry_price: string;
   mark_price: string;
+};
+
+export type PositionsWsResponseRaw = {
+  server_utc_timestamp: string;
+  user_tag: string;
+  positions: PositionRaw[];
 };
 
 export type OrderDetailsRestRaw = {

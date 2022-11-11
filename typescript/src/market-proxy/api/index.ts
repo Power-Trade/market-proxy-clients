@@ -23,6 +23,7 @@ import { refreshRfqInterestWs } from './ws/refreshRfqInterestWs';
 import { subscribe, SubscribeWsArgs } from './ws/subscribeWs';
 import { startListeningForRfqsWs } from './ws/startListeningForRfqsWs';
 import { stopListeningForRfqsWs } from './ws/stopListeningForRfqsWs';
+import { positionsWs } from './ws/positionsWs';
 
 export class MarketProxyApi {
   public ws: MarketProxyWs;
@@ -62,6 +63,8 @@ export class MarketProxyApi {
   public startListeningForRfqsWs = () => startListeningForRfqsWs(this.ws);
 
   public stopListeningForRfqsWs = () => stopListeningForRfqsWs(this.ws);
+
+  public positionsWs = () => positionsWs(this.ws);
 
   // REST
   public apiTimeRest = () => apiTimeRest(this.ws);
