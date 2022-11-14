@@ -290,3 +290,19 @@ export type SnapshotRaw = {
   buy: SnapshotRawRow[];
   sell: SnapshotRawRow[];
 };
+
+export type ExecutionRaw = {
+  server_utc_timestamp: string;
+  utc_timestamp: string;
+  tradeable_entity_id: string;
+  symbol: string;
+  trade_id: string;
+  order_id: string;
+  client_order_id: string;
+  executed_price: string;
+  executed_quantity: string;
+  liquidity_flag: string;
+  price: string;
+  side: Side;
+  order_state: string;
+};

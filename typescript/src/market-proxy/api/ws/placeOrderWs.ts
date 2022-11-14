@@ -26,5 +26,6 @@ export const placeOrderWs = async (ws: MarketProxyWs, order: OrderRequest) => {
     orderId: '',
     state: 'rejected',
     timestamp: parseInt(payload.utc_timestamp, 10),
+    reason: payload.reason as string,
   };
 };

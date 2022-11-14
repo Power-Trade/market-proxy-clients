@@ -217,6 +217,7 @@ describe('[WS] Multi Leg Placement', () => {
       state: 'rejected',
       timestamp: expect.any(Number),
       orderId: expect.any(String),
+      reason: 'invalid_legs',
     });
   });
 
@@ -245,6 +246,7 @@ describe('[WS] Multi Leg Placement', () => {
       state: 'rejected',
       timestamp: expect.any(Number),
       orderId: expect.any(String),
+      reason: 'invalid_legs',
     });
   });
 });

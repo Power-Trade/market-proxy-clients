@@ -1,5 +1,12 @@
 import MarketProxyWs from '../base/MarketProxyWs';
-import { Config, OrderRequest, RfqAddedRaw, RfqRemovedRaw, SnapshotRaw } from '../types';
+import {
+  Config,
+  ExecutionRaw,
+  OrderRequest,
+  RfqAddedRaw,
+  RfqRemovedRaw,
+  SnapshotRaw,
+} from '../types';
 import { generateAccessToken } from '../utils/cryptography';
 import { apiTimeRest } from './rest/apiTimeRest';
 import { authenticate } from './ws/authenticate';
@@ -117,6 +124,13 @@ export class MarketProxyApi {
     return this.ws.addOnMessageListener({
       callback,
       selector: (event) => event === 'snapshot',
+    });
+  };
+
+  public onExecution = (callback: (payload: ExecutionRaw) => void) => {
+    return this.ws.addOnMessageListener({
+      callback,
+      selector: (event) => event === 'execution',
     });
   };
 }
