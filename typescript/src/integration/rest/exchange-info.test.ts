@@ -3,6 +3,7 @@ import { expect, test } from '@jest/globals';
 import axios from 'axios';
 import getMarketProxyApi from '../../market-proxy/api';
 import { getConfig, getEnvironment } from '../../market-proxy/base/config';
+import { difference } from '../../market-proxy/utils/array';
 
 test('[REST] fetch exchange info', async () => {
   const api = await getMarketProxyApi(getConfig());
@@ -20,7 +21,7 @@ test('[REST] fetch exchange info', async () => {
 
   expect(marketData.length).toBeTruthy();
 
-  expect(marketData.length).toEqual(entities.length);
+  expect(entities.length).toBeGreaterThanOrEqual(marketData.length);
 
   await api.close();
 }, 10000);
