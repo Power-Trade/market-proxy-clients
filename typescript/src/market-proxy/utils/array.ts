@@ -17,3 +17,9 @@ export const sortBy = <T>(arr: T[], prop: keyof T) => {
 
   return result;
 };
+
+export const difference = <T, U>(
+  arr1: T[],
+  arr2: U[],
+  compareFn: (item1: T, item2: U) => boolean
+) => arr1.filter((item1) => !arr2.find((item2) => compareFn(item1, item2)));
