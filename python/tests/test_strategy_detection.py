@@ -90,6 +90,28 @@ def test_put_butterfly():
     assert s["shortName"] == "PFly"
 
 
+def test_iron_butterfly():
+    s = get_strategy_name(
+        "BTC-20221230-17000P@-1/BTC-20221230-17000C@-1/BTC-20221230-16500P@1/BTC-20221230-17500C@1")
+    assert s["longName"] == "Iron Butterfly"
+    assert s["shortName"] == "IrnFly"
+
+    s = get_strategy_name(
+        "BTC-20221230-17000P@-2/BTC-20221230-17000C@-1/BTC-20221230-16500P@1/BTC-20221230-17500C@1")
+    assert s is None
+
+
+def test_iron_condor():
+    s = get_strategy_name(
+        "BTC-20221230-18000C@1/BTC-20221230-16000P@1/BTC-20221230-16500P@-1/BTC-20221230-17500C@-1")
+    assert s["longName"] == "Iron Condor"
+    assert s["shortName"] == "IrnCdr"
+
+    s = get_strategy_name(
+        "BTC-20221230-18000C@2/BTC-20221230-16000P@1/BTC-20221230-16500P@-1/BTC-20221230-17500C@-1")
+    assert s is None
+
+
 def test_1_sell_leg_not_put_butterfly_spread():
     s = get_strategy_name(
         "BTC-20220826-22000P@-1/BTC-20220826-21500P@1/BTC-20220826-22500P@1")
