@@ -25,8 +25,8 @@ BASE_STRATEGIES = [
         "longName": "Put Spread",
         "shortName": "PSpd",
         "legs": [
-            {"optionType": "put", "price": "OTM", "ratio": 1},
-            {"optionType": "put", "price": "ATM", "ratio": -1},
+            {"optionType": "put", "price": "OTM", "ratio": -1},
+            {"optionType": "put", "price": "ATM", "ratio": 1},
         ],
     },
     {
@@ -65,10 +65,10 @@ BASE_STRATEGIES = [
         "longName": "Call Condor",
         "shortName": "CCdr",
         "legs": [
-            {"optionType": "call", "price": "X_ITM", "ratio": -1},
-            {"optionType": "call", "price": "ITM", "ratio": 1},
-            {"optionType": "call", "price": "OTM", "ratio": 1},
-            {"optionType": "call", "price": "X_OTM", "ratio": -1},
+            {"optionType": "call", "price": "X_ITM", "ratio": 1},
+            {"optionType": "call", "price": "ITM", "ratio": -1},
+            {"optionType": "call", "price": "OTM", "ratio": -1},
+            {"optionType": "call", "price": "X_OTM", "ratio": 1},
         ],
     },
     {

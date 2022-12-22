@@ -82,4 +82,4 @@ def get_strategy_name(symbol: str):
     if strategy is None:
         return None
 
-    return {"longName": strategy["longName"], "shortName": strategy["shortName"], "inverted": strategy["fingerprint"] == fingerprint}
+    return {"longName": strategy["longName"], "shortName": strategy["shortName"], "inverted": strategy["inverted_fingerprint"] == fingerprint}
