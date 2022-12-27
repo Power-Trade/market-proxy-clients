@@ -15,10 +15,11 @@ export const cancelAllOpenOrdersWs = async (
     payload.tradeable_entity_id = tradeableEntityId;
   }
 
-  const [, response] = await ws.sendTaggedRequest('cancel_order', {
+  const [, response] = await ws.sendTaggedRequest('cancel_all_orders', {
     symbol,
-    user_tag: getUserTag(),
   });
+
+  console.log(JSON.stringify(response));
 
   return response;
 };

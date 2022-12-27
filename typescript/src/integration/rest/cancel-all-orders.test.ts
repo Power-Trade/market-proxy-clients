@@ -39,20 +39,35 @@ describe('[REST] Cancel All Orders', () => {
 
     expect(orders.length).toEqual(0);
 
-    await api.placeBulkOrderWs([
+    const payload = [
       getOrderBase(),
       { ...getOrderBase(), symbol: 'BTC-USD', quantity: 1, price: 2000 },
       { ...getOrderBase(), symbol: 'BTC-USD', quantity: 1, price: 3000 },
       { ...getOrderBase(), symbol: 'ETH-USD', quantity: 10, price: 100 },
       { ...getOrderBase(), symbol: 'PTF-USD', quantity: 1000, price: 0.01 },
-    ]);
+    ];
+
+    await api.placeBulkOrderWs(payload);
 
     while (orders.length !== 5) {
       orders = await api.fetchOpenOrdersRest();
       await sleep(500);
     }
 
-    await api.cancelAllOpenOrdersRest();
+    const response = await api.cancelAllOpenOrdersRest({ symbol: 'BTC-USD' });
+
+    expect(response).toEqual({
+      cancel_all_orders_response: {
+        reason: 'success',
+        timestamp: expect.any(String),
+        details: expect.arrayContaining(
+          payload.map(({ clientOrderId }) => ({
+            client_order_id: clientOrderId,
+            order_state: 'pending_cancel',
+          }))
+        ),
+      },
+    });
 
     orders = await api.fetchOpenOrdersRest();
 

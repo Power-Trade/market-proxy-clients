@@ -1,8 +1,17 @@
 import MarketProxyWs from '../../base/MarketProxyWs';
-import { log } from '../../utils/log';
+import { CancelOpenOrdersRestResponseRaw } from '../../types';
 
-export const cancelAllOpenOrdersRest = async (ws: MarketProxyWs) => {
-  const r = await ws.restCall({ url: `${ws.httpUrl}/v1/api/allOrders`, method: 'DELETE' });
+export type CancelAllOpenOrdersRestArgs = { symbol?: string; tradeableEntityId?: string };
 
-  log(r);
+export const cancelAllOpenOrdersRest = async (
+  ws: MarketProxyWs,
+  args?: CancelAllOpenOrdersRestArgs
+) => {
+  const r = await ws.restCall({
+    url: `${ws.httpUrl}/v1/api/allOrders`,
+    method: 'DELETE',
+    data: args,
+  });
+
+  return r as CancelOpenOrdersRestResponseRaw;
 };

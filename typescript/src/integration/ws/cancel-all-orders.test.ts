@@ -29,7 +29,6 @@ describe('[WS] Cancel All Orders', () => {
   }, 10000);
 
   afterAll(async () => {
-    await api.cancelAllOpenOrdersRest();
     await api.close();
   });
 
@@ -52,8 +51,8 @@ describe('[WS] Cancel All Orders', () => {
       await sleep(200);
     }
 
-    await api.cancelAllOpenOrdersWs({ symbol: 'BTC-USD' });
+    api.cancelAllOpenOrdersWs();
 
-    // TODO Fix issue with cancel all orders #124
+    await sleep(1000);
   }, 10000);
 });

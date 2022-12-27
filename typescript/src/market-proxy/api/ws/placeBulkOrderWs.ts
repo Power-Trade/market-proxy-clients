@@ -1,13 +1,11 @@
 import MarketProxyWs from '../../base/MarketProxyWs';
 import { getOrderRequest } from '../../parser/getOrderRequest';
-import { OrderRequest } from '../../types';
-import { getUserTag } from '../../utils/userTag';
+import { BulkOrderWsResponseRaw, OrderRequest } from '../../types';
 
-export const placeBulkOrderWs = (ws: MarketProxyWs, orderRequests: OrderRequest[]) => {
-  ws.send({
-    new_bulk_order: {
-      orders: orderRequests.map(getOrderRequest),
-      user_tag: getUserTag(),
-    },
+export const placeBulkOrderWs = async (ws: MarketProxyWs, orderRequests: OrderRequest[]) => {
+  const [, response] = await ws.sendTaggedRequest('new_bulk_order', {
+    orders: orderRequests.map(getOrderRequest),
   });
+
+  return response as BulkOrderWsResponseRaw;
 };

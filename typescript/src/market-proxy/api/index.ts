@@ -10,7 +10,10 @@ import {
 import { generateAccessToken } from '../utils/cryptography';
 import { apiTimeRest } from './rest/apiTimeRest';
 import { authenticate } from './ws/authenticate';
-import { cancelAllOpenOrdersRest } from './rest/cancelAllOpenOrdersRest';
+import {
+  cancelAllOpenOrdersRest,
+  CancelAllOpenOrdersRestArgs,
+} from './rest/cancelAllOpenOrdersRest';
 import { cancelAllOpenOrdersWs, CancelAllOpenOrdersWsArgs } from './ws/cancelAllOpenOrdersWs';
 import { cancelOpenOrderWs, CancelOpenOrderWsArgs } from './ws/cancelOpenOrderWs';
 import { fetchEntitiesAndRulesWs } from './ws/fetchEntitiesAndRulesWs';
@@ -84,7 +87,8 @@ export class MarketProxyApi {
 
   public fetchOpenOrdersRest = () => fetchOpenOrdersRest(this.ws);
 
-  public cancelAllOpenOrdersRest = () => cancelAllOpenOrdersRest(this.ws);
+  public cancelAllOpenOrdersRest = (args?: CancelAllOpenOrdersRestArgs) =>
+    cancelAllOpenOrdersRest(this.ws, args);
 
   public exchangeInfoRest = () => exchangeInfoRest(this.ws);
 
