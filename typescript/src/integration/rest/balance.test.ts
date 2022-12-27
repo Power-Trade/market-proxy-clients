@@ -15,6 +15,7 @@ test('[REST] fetch balances', async () => {
     cash_balance: expect.any(String),
     available_balance: expect.any(String),
     reserved_balance: expect.any(String),
+    withdrawable_balance: expect.any(String),
     timestamp: expect.any(String),
   });
 

@@ -31,6 +31,8 @@ import { subscribe, SubscribeWsArgs } from './ws/subscribeWs';
 import { startListeningForRfqsWs } from './ws/startListeningForRfqsWs';
 import { stopListeningForRfqsWs } from './ws/stopListeningForRfqsWs';
 import { positionsWs } from './ws/positionsWs';
+import { TradeHistoryArgs, tradeHistoryWs } from './ws/tradeHistoryWs';
+import { balancesWs } from './ws/balancesWs';
 
 export class MarketProxyApi {
   public ws: MarketProxyWs;
@@ -71,7 +73,11 @@ export class MarketProxyApi {
 
   public stopListeningForRfqsWs = () => stopListeningForRfqsWs(this.ws);
 
+  public balancesWs = () => balancesWs(this.ws);
+
   public positionsWs = () => positionsWs(this.ws);
+
+  public tradeHistoryWs = (args: TradeHistoryArgs) => tradeHistoryWs(this.ws, args);
 
   // REST
   public apiTimeRest = () => apiTimeRest(this.ws);

@@ -31,8 +31,8 @@ describe('[REST] Order Book', () => {
 
     const orderBook = await api.orderbookRest({ symbol, depth: 10 });
 
-    const initialBuys = orderBook.buy.length;
-    const initialSells = orderBook.sell.length;
+    const initialBuys = orderBook.buy.filter((b) => b.price !== '10.0').length;
+    const initialSells = orderBook.sell.filter((b) => b.price !== '1000000.0').length;
 
     await api.placeOrderWs({
       activeCycles: 1,
@@ -67,5 +67,17 @@ describe('[REST] Order Book', () => {
 
     expect(buys).toEqual(initialBuys + 1);
     expect(sells).toEqual(initialSells + 1);
+  });
+
+  test('order book depth', async () => {
+    const orderBook1 = await api.orderbookRest({ symbol: 'BTC-USD', depth: 1 });
+
+    expect(orderBook1.buy.length).toBeLessThanOrEqual(1);
+    expect(orderBook1.sell.length).toBeLessThanOrEqual(1);
+
+    const orderBook2 = await api.orderbookRest({ symbol: 'BTC-USD', depth: 2 });
+
+    expect(orderBook2.buy.length).toBeLessThanOrEqual(2);
+    expect(orderBook2.sell.length).toBeLessThanOrEqual(2);
   });
 });

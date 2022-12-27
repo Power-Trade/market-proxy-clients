@@ -43,7 +43,7 @@ class BaseWs {
   private onWsMessage = (payload: any) => {
     try {
       this.onMessage(JSON.parse(payload.data));
-      log(JSON.parse(payload.data));
+      log(payload.data);
     } catch (err) {
       console.error(`market proxy: failed to decode ws message on endpoint ${payload.data}`);
       this.onMessage({});
@@ -51,7 +51,7 @@ class BaseWs {
   };
 
   public send = (payload: any) => {
-    log(payload);
+    log(JSON.stringify(payload));
     if (this.ws?.readyState === WebSocket.OPEN) {
       this.ws.send(JSON.stringify(payload));
     }

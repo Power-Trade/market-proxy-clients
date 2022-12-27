@@ -30,7 +30,9 @@ export type RequestName =
   | 'cancel_order'
   | 'register_for_rfqs'
   | 'deregister_for_rfqs'
+  | 'balances'
   | 'positions'
+  | 'trade_history_request'
   | 'subscribe';
 
 interface OrderLeg {
@@ -181,15 +183,6 @@ export type DeliverableInfoRaw = {
   deliverable_id: string;
 };
 
-export type BalanceRaw = {
-  deliverable_id: string;
-  symbol: string;
-  cash_balance: string;
-  available_balance: string;
-  reserved_balance: string;
-  timestamp: string;
-};
-
 export type PositionRaw = {
   symbol: string;
   deliverable_id: string;
@@ -199,12 +192,29 @@ export type PositionRaw = {
   size: string;
   average_entry_price: string;
   mark_price: string;
+  upnl: string;
 };
 
 export type PositionsWsResponseRaw = {
   server_utc_timestamp: string;
   user_tag: string;
   positions: PositionRaw[];
+};
+
+export type BalanceRaw = {
+  deliverable_id: string;
+  symbol: string;
+  cash_balance: string;
+  available_balance: string;
+  reserved_balance: string;
+  withdrawable_balance: string;
+  timestamp: string;
+};
+
+export type BalancesWsResponseRaw = {
+  server_utc_timestamp: string;
+  user_tag: string;
+  balances: BalanceRaw[];
 };
 
 export type OrderDetailsRestRaw = {
