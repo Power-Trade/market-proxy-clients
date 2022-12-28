@@ -2,7 +2,7 @@ import { describe, expect, test, beforeAll, afterAll } from '@jest/globals';
 
 import getMarketProxyApi, { MarketProxyApi } from '../../market-proxy/api';
 import { getConfig } from '../../market-proxy/base/config';
-import { OrderRequest, TradeableEntity } from '../../market-proxy/types';
+import { MarketType, OrderRequest, TradeableEntity } from '../../market-proxy/types';
 import { getUserTag } from '../../market-proxy/utils/userTag';
 import { sleep } from '../../market-proxy/utils/time';
 
@@ -46,11 +46,25 @@ describe('[WS] Single Leg Placement', () => {
       await sleep(200);
     }
 
-    await api.placeBulkOrderWs([
+    const payload = [
       getOrderBase(),
       { ...getOrderBase(), symbol: 'ETH-USD', quantity: 2, price: 100 },
       { ...getOrderBase(), symbol: 'PTF-USD', quantity: 1000, price: 0.01 },
-    ]);
+    ];
+
+    await api.placeBulkOrderWs(payload);
+
+    const response = await api.placeBulkOrderWs(payload);
+
+    expect(response).toEqual({
+      user_tag: expect.any(String),
+      results: expect.arrayContaining(
+        payload.map((o) => ({
+          order_state: 'pending_new',
+          client_order_id: o.clientOrderId,
+        }))
+      ),
+    });
 
     while (orders.length < 3) {
       orders = await api.fetchOpenOrdersRest();
@@ -125,7 +139,7 @@ describe('[WS] Single Leg Placement', () => {
     )!;
     const perpTeId = symbols.find((s) => s.symbol === 'BTC-USD-PERPETUAL')!.id;
 
-    await api.placeBulkOrderWs([
+    const payload = [
       {
         ...getOrderBase(),
         symbol: futureSymbol,
@@ -145,24 +159,36 @@ describe('[WS] Single Leg Placement', () => {
         ...getOrderBase(),
         symbol: undefined,
         tradeableEntityId: futureTeId,
-        marketType: 'rfq',
+        marketType: 'rfq' as MarketType,
         price: 0,
       },
       {
         ...getOrderBase(),
         symbol: optionSymbol,
         tradeableEntityId: undefined,
-        marketType: 'rfq',
+        marketType: 'rfq' as MarketType,
         price: 0,
       },
       {
         ...getOrderBase(),
         symbol: undefined,
         tradeableEntityId: perpTeId,
-        marketType: 'rfq',
+        marketType: 'rfq' as MarketType,
         price: 0,
       },
-    ]);
+    ];
+
+    const response = await api.placeBulkOrderWs(payload);
+
+    expect(response).toEqual({
+      user_tag: expect.any(String),
+      results: expect.arrayContaining(
+        payload.map((o) => ({
+          order_state: 'pending_new',
+          client_order_id: o.clientOrderId,
+        }))
+      ),
+    });
 
     while (orders.length < 6) {
       orders = await api.fetchOpenOrdersRest();

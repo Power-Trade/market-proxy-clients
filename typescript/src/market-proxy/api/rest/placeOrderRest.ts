@@ -4,7 +4,6 @@ import { OrderRequest } from '../../types';
 import { getUserTag } from '../../utils/userTag';
 
 export const placeOrderRest = async (ws: MarketProxyWs, order: OrderRequest) => {
-  console.log(JSON.stringify({ new_order: { ...getOrderRequest(order), user_tag: getUserTag() } }));
   const response = (await ws.restCall({
     url: `${ws.httpUrl}/v1/api/order`,
     method: 'POST',

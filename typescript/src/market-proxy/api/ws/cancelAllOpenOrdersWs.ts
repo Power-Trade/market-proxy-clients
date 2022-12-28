@@ -1,4 +1,5 @@
 import MarketProxyWs from '../../base/MarketProxyWs';
+import { CancelOpenOrdersWsResponseRaw } from '../../types';
 import { getUserTag } from '../../utils/userTag';
 
 export type CancelAllOpenOrdersWsArgs = { symbol?: string; tradeableEntityId?: string };
@@ -15,11 +16,7 @@ export const cancelAllOpenOrdersWs = async (
     payload.tradeable_entity_id = tradeableEntityId;
   }
 
-  const [, response] = await ws.sendTaggedRequest('cancel_all_orders', {
-    symbol,
-  });
+  const [, response] = await ws.sendTaggedRequest('cancel_all_orders', payload);
 
-  console.log(JSON.stringify(response));
-
-  return response;
+  return response as CancelOpenOrdersWsResponseRaw;
 };

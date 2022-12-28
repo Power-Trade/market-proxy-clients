@@ -30,7 +30,7 @@ test('[WS] fetch trade history', async () => {
     tradeTimestamp: Date.now() - 1000 * 24 * 60 * 60 + '000',
   });
 
-  console.log(result);
+  // console.log(result);
 
   await api.close();
 }, 10000);

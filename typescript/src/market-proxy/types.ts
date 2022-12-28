@@ -326,13 +326,14 @@ export type CancelOpenOrdersWsResponseRaw = {
   server_utc_timestamp: string;
   timestamp: string;
   reason: 'success';
-  details: { client_order_id: string; order_state: string }[];
+  user_tag: string;
+  results: { client_order_id: string; order_state: string }[];
 };
 
 export type CancelOpenOrdersRestResponseRaw = {
   cancel_all_orders_response: {
     timestamp: string;
     reason: string;
-    details: { client_order_id: string; order_state: string }[];
+    results: { client_order_id: string; order_state: string }[];
   };
 };
