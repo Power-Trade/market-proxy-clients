@@ -1,11 +1,14 @@
 import MarketProxyWs from '../../base/MarketProxyWs';
 import { getOrderRequest } from '../../parser/getOrderRequest';
 import { OrderRequest } from '../../types';
+import { getUserTag } from '../../utils/userTag';
 
 export const placeOrderRest = async (ws: MarketProxyWs, order: OrderRequest) => {
+  console.log(JSON.stringify({ new_order: { ...getOrderRequest(order), user_tag: getUserTag() } }));
   const response = (await ws.restCall({
-    url: `${ws.httpUrl}/v1/api/order?${new URLSearchParams(getOrderRequest(order))}`,
+    url: `${ws.httpUrl}/v1/api/order`,
     method: 'POST',
+    data: { new_order: { ...getOrderRequest(order), user_tag: getUserTag() } },
   })) as any;
 
   if (response.order_accepted) {
