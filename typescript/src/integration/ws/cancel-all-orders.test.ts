@@ -68,6 +68,11 @@ describe('[WS] Cancel All Orders', () => {
         }))
       ),
     });
+
+    while (orders.length !== 0) {
+      orders = await api.fetchOpenOrdersRest();
+      await sleep(200);
+    }
   }, 10000);
 
   test('cancel all orders for symbol', async () => {
@@ -107,9 +112,19 @@ describe('[WS] Cancel All Orders', () => {
       ),
     });
 
+    while (orders.length !== 2) {
+      orders = await api.fetchOpenOrdersRest();
+      await sleep(200);
+    }
+
     const response2 = await api.cancelAllOpenOrdersWs();
 
     expect(response2.results).toHaveLength(2);
+
+    while (orders.length !== 0) {
+      orders = await api.fetchOpenOrdersRest();
+      await sleep(200);
+    }
   }, 10000);
 
   test('cancel all orders for tradeable entity id', async () => {
@@ -151,8 +166,18 @@ describe('[WS] Cancel All Orders', () => {
       ),
     });
 
+    while (orders.length !== 2) {
+      orders = await api.fetchOpenOrdersRest();
+      await sleep(200);
+    }
+
     const response2 = await api.cancelAllOpenOrdersWs();
 
     expect(response2.results).toHaveLength(2);
+
+    while (orders.length !== 0) {
+      orders = await api.fetchOpenOrdersRest();
+      await sleep(200);
+    }
   }, 10000);
 });

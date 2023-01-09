@@ -72,9 +72,10 @@ describe('[REST] Cancel All Orders', () => {
       },
     });
 
-    orders = await api.fetchOpenOrdersRest();
-
-    expect(orders.length).toEqual(0);
+    while (orders.length !== 0) {
+      orders = await api.fetchOpenOrdersRest();
+      await sleep(200);
+    }
   }, 10000);
 
   test('cancel all orders by symbol', async () => {
@@ -116,9 +117,19 @@ describe('[REST] Cancel All Orders', () => {
       },
     });
 
+    while (orders.length !== 2) {
+      orders = await api.fetchOpenOrdersRest();
+      await sleep(200);
+    }
+
     const response2 = await api.cancelAllOpenOrdersRest();
 
     expect(response2.cancel_all_orders_response.results.length).toEqual(2);
+
+    while (orders.length !== 0) {
+      orders = await api.fetchOpenOrdersRest();
+      await sleep(200);
+    }
   }, 10000);
 
   test('cancel all orders by tradeable entity id', async () => {
@@ -162,8 +173,18 @@ describe('[REST] Cancel All Orders', () => {
       },
     });
 
+    while (orders.length !== 2) {
+      orders = await api.fetchOpenOrdersRest();
+      await sleep(200);
+    }
+
     const response2 = await api.cancelAllOpenOrdersRest();
 
     expect(response2.cancel_all_orders_response.results.length).toEqual(2);
+
+    while (orders.length !== 0) {
+      orders = await api.fetchOpenOrdersRest();
+      await sleep(200);
+    }
   }, 10000);
 });
