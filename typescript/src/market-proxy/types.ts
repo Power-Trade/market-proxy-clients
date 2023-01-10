@@ -233,6 +233,18 @@ export type OrderDetailsRestRaw = {
   executions: [];
 };
 
+export type OrderAcceptedWsRaw = {
+  utc_timestamp: string;
+  market_id: string;
+  tradeable_entity_id: string;
+  symbol: string;
+  type: string;
+  order_id: string;
+  client_order_id: string;
+  quantity: string;
+  price: string;
+};
+
 export type RefreshRfqInterestRestRaw = {
   order_id: string;
   client_order_id: string;
