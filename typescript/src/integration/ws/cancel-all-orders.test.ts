@@ -2,7 +2,7 @@ import { describe, expect, test, beforeAll, afterAll } from '@jest/globals';
 
 import getMarketProxyApi, { MarketProxyApi } from '../../market-proxy/api';
 import { getConfig } from '../../market-proxy/base/config';
-import { OrderRequest, TradeableEntity } from '../../market-proxy/types';
+import { OrderAcceptedWsRaw, OrderRequest, TradeableEntity } from '../../market-proxy/types';
 import { sleep } from '../../market-proxy/utils/time';
 import { getUserTag } from '../../market-proxy/utils/userTag';
 
@@ -179,5 +179,54 @@ describe('[WS] Cancel All Orders', () => {
       orders = await api.fetchOpenOrdersRest();
       await sleep(200);
     }
+  }, 10000);
+
+  test('cancel pending_new orders', async () => {
+    await api.cancelAllOpenOrdersWs();
+    let orders = await api.fetchOpenOrdersRest();
+
+    const ordersAlive: OrderAcceptedWsRaw[] = [];
+    api.onOrderAccepted((e) => ordersAlive.push(e));
+
+    expect(orders.length).toEqual(0);
+
+    const payload = [
+      getOrderBase(),
+      { ...getOrderBase(), symbol: 'BTC-USD', quantity: 1, price: 2000 },
+      { ...getOrderBase(), symbol: 'BTC-USD', quantity: 1, price: 3000 },
+      { ...getOrderBase(), symbol: 'ETH-USD', quantity: 10, price: 100 },
+      { ...getOrderBase(), symbol: 'PTF-USD', quantity: 1000, price: 0.01 },
+    ];
+
+    // Race-condition, but usually MP should receive "cancel_all" while all orders are in "pending_new" state
+    let placementAwait = api.placeBulkOrderWs(payload);
+    let cancelAwait = api.cancelAllOpenOrdersWs();
+
+    // Regardless of delays, we should receive at least 5 "order_entered" and "order_cancelled"
+    let placement = await placementAwait;
+    let cancel = await cancelAwait;
+
+    expect(cancel).toEqual({
+      reason: 'success',
+      server_utc_timestamp: expect.any(String),
+      timestamp: expect.any(String),
+      user_tag: expect.any(String),
+      results: expect.arrayContaining(
+        payload.slice(0, 5).map((o) => ({
+          order_state: 'pending_cancel',
+          client_order_id: o.clientOrderId,
+        }))
+      ),
+    });
+
+    while (ordersAlive.length !== 5) {
+      await sleep(200)
+    }
+
+    // There is a race condition, but orders should be cancelled in the end anyway
+    do {
+      orders = await api.fetchOpenOrdersRest();
+      await sleep(50);
+    } while (orders.length !== 0)
   }, 10000);
 });
