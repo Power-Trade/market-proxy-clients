@@ -131,14 +131,17 @@ class MarketProxyWs {
 
   public restCall = async <T>(args: AxiosRequestConfig): Promise<T> => {
     try {
-      const response = await axios({
+      let request = {
         headers: this.accessToken
           ? {
               credentials_secret: this.accessToken,
             }
           : args.headers,
         ...args,
-      });
+      }
+      log(JSON.stringify(request))
+
+      const response = await axios(request);
 
       log(response.data);
 
