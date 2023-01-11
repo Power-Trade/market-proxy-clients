@@ -201,10 +201,12 @@ describe('[WS] Cancel All Orders', () => {
     // Race-condition, but usually MP should receive "cancel_all" while all orders are in "pending_new" state
     let placementAwait = api.placeBulkOrderWs(payload);
     let cancelAwait = api.cancelAllOpenOrdersWs();
+    let cancel2Await = api.cancelAllOpenOrdersWs();
 
     // Regardless of delays, we should receive at least 5 "order_entered" and "order_cancelled"
     let placement = await placementAwait;
     let cancel = await cancelAwait;
+    let cancel2 = await cancel2Await;
 
     expect(cancel).toEqual({
       reason: 'success',
