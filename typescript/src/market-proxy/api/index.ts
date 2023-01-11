@@ -8,6 +8,7 @@ import {
   SnapshotRaw,
 } from '../types';
 import { generateAccessToken } from '../utils/cryptography';
+import { sleep } from '../utils/time';
 import { apiTimeRest } from './rest/apiTimeRest';
 import { authenticate } from './ws/authenticate';
 import {
@@ -36,6 +37,7 @@ import { stopListeningForRfqsWs } from './ws/stopListeningForRfqsWs';
 import { positionsWs } from './ws/positionsWs';
 import { TradeHistoryArgs, tradeHistoryWs } from './ws/tradeHistoryWs';
 import { balancesWs } from './ws/balancesWs';
+import { log } from '../utils/log';
 
 export class MarketProxyApi {
   public ws: MarketProxyWs;
@@ -110,6 +112,16 @@ export class MarketProxyApi {
   public orderbookRest = (args: OrderbookRestArgs) => orderbookRest(this.ws, args);
 
   public placeOrderRest = (order: OrderRequest) => placeOrderRest(this.ws, order);
+
+  public cancelAndWait = async () => {
+    let orders = await fetchOpenOrdersRest(this.ws);
+    while (orders.length > 0) {
+      await cancelAllOpenOrdersRest(this.ws);
+      await sleep(200);
+      orders = await fetchOpenOrdersRest(this.ws);
+    }
+    return orders
+  }
 
   // Listeners
   public onRfqAdded = (callback: (payload: RfqAddedRaw) => void) => {

@@ -34,8 +34,7 @@ describe('[REST] Cancel Order', () => {
   });
 
   test('cancel order by order id and client order id', async () => {
-    await api.cancelAllOpenOrdersRest();
-    let orders = await api.fetchOpenOrdersRest();
+    let orders = await api.cancelAndWait();
 
     expect(orders.length).toEqual(0);
 
