@@ -132,10 +132,10 @@ describe('[WS] Single Leg Placement', () => {
     expect(orders.length).toEqual(0);
 
     const { symbol: futureSymbol, id: futureTeId } = symbols.find(
-      (s) => s.productType === 'future'
+      (s) => ((s.productType === 'future') && (s.expiryTimeStamp! > Date.now()))
     )!;
     const { symbol: optionSymbol, id: optionTeId } = symbols.find(
-      (s) => s.productType === 'option'
+      (s) => ((s.productType === 'option') && (s.expiryTimeStamp! > Date.now()))
     )!;
     const perpTeId = symbols.find((s) => s.symbol === 'BTC-USD-PERPETUAL')!.id;
 
