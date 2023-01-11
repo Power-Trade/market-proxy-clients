@@ -8,6 +8,7 @@ export type CancelOrderRestResponseRaw = {
   order_id: string;
   client_order_id: string;
   timestamp: string;
+  filled_quantity: number;
   reason: string;
 };
 

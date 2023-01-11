@@ -58,6 +58,7 @@ describe('[REST] Cancel Order', () => {
       order_id: orders[0].orderId,
       client_order_id: orders[0].clientOrderId,
       timestamp: expect.any(String),
+      filled_quantity: "0.0",
       reason: 'user_cancelled',
     });
 
@@ -74,6 +75,7 @@ describe('[REST] Cancel Order', () => {
       order_id: orders[0].orderId,
       client_order_id: orders[0].clientOrderId,
       timestamp: expect.any(String),
+      filled_quantity: "0.0",
       reason: 'user_cancelled',
     });
   }, 10000);
