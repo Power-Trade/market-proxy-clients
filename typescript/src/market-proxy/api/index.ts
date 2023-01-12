@@ -1,5 +1,6 @@
 import MarketProxyWs from '../base/MarketProxyWs';
 import {
+  CancelOrderResponseRaw,
   Config,
   ExecutionRaw,
   OrderAcceptedWsRaw,
@@ -154,6 +155,13 @@ export class MarketProxyApi {
     return this.ws.addOnMessageListener({
       callback,
       selector: (event) => event === 'order_accepted',
+    });
+  };
+
+  public onOrderCancel = (callback: (payload: CancelOrderResponseRaw) => void) => {
+    return this.ws.addOnMessageListener({
+      callback,
+      selector: (event) => event === 'cancel_order',
     });
   };
 

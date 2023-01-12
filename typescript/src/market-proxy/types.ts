@@ -175,6 +175,7 @@ export type CancelOrderResponseRaw = {
   symbol: string;
   order_id: string;
   client_order_id: string;
+  filled_quantity: number;
   reason: string;
 };
 
