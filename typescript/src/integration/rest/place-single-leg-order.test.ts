@@ -69,7 +69,7 @@ describe('[REST] Single Leg Placement', () => {
   });
 
   test('Single Leg Future order', async () => {
-    const symbol = entities.find((s) => s.productType === 'future')?.symbol;
+    const symbol = entities.find((s) => ((s.productType === 'future') && (s.expiryTimeStamp! > Date.now())))?.symbol;
     const order: OrderRequest = {
       ...getOrderBase(),
       price: 10000,
@@ -88,7 +88,7 @@ describe('[REST] Single Leg Placement', () => {
   });
 
   test('Single Leg Future RFQ', async () => {
-    const symbol = entities.find((s) => s.productType === 'future')?.symbol;
+    const symbol = entities.find((s) => ((s.productType === 'future') && (s.expiryTimeStamp! > Date.now())))?.symbol;
     const order: OrderRequest = {
       ...getOrderBase(),
       marketType: 'rfq',
@@ -147,7 +147,7 @@ describe('[REST] Single Leg Placement', () => {
   });
 
   test('Single Leg Option order', async () => {
-    const symbol = entities.find((s) => s.productType === 'option')?.symbol;
+    const symbol = entities.find((s) => ((s.productType === 'option') && (s.expiryTimeStamp! > Date.now())))?.symbol;
     const order: OrderRequest = {
       ...getOrderBase(),
       price: 10000,
@@ -167,7 +167,7 @@ describe('[REST] Single Leg Placement', () => {
   });
 
   test('Single Leg Option RFQ', async () => {
-    const symbol = entities.find((s) => s.productType === 'option')?.symbol;
+    const symbol = entities.find((s) => ((s.productType === 'option') && (s.expiryTimeStamp! > Date.now())))?.symbol;
     const order: OrderRequest = {
       ...getOrderBase(),
       marketType: 'rfq',

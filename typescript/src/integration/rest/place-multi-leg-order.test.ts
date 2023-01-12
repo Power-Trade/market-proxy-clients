@@ -23,7 +23,7 @@ describe('[REST] Multi Leg Placement', () => {
     await api.close();
   });
 
-  test.only('Multi Leg Option order by symbols', async () => {
+  test('Multi Leg Option order by symbols', async () => {
     const syms = entities.filter((s) => s.productType === 'option').slice(0, 10);
     syms.sort((a, b) => toNumber(a.id) - toNumber(b.id));
 
@@ -59,6 +59,7 @@ describe('[REST] Multi Leg Placement', () => {
     expect(orderResponse).toEqual({
       ...order,
       state: 'accepted',
+      orderId: expect.any(String),
       timestamp: expect.any(Number),
     });
   });
@@ -99,6 +100,7 @@ describe('[REST] Multi Leg Placement', () => {
     expect(orderResponse).toEqual({
       ...order,
       state: 'accepted',
+      orderId: expect.any(String),
       timestamp: expect.any(Number),
     });
   });
@@ -139,6 +141,7 @@ describe('[REST] Multi Leg Placement', () => {
     expect(orderResponse).toEqual({
       ...order,
       state: 'accepted',
+      orderId: expect.any(String),
       timestamp: expect.any(Number),
     });
   });
@@ -179,6 +182,7 @@ describe('[REST] Multi Leg Placement', () => {
     expect(orderResponse).toEqual({
       ...order,
       state: 'accepted',
+      orderId: expect.any(String),
       timestamp: expect.any(Number),
     });
   });
@@ -216,7 +220,7 @@ describe('[REST] Multi Leg Placement', () => {
       ...order,
       state: 'rejected',
       timestamp: expect.any(Number),
-      orderId: expect.any(String),
+      orderId: '',
       reason: 'invalid_legs',
     });
   });
@@ -245,7 +249,7 @@ describe('[REST] Multi Leg Placement', () => {
       ...order,
       state: 'rejected',
       timestamp: expect.any(Number),
-      orderId: expect.any(String),
+      orderId: '',
       reason: 'invalid_legs',
     });
   });

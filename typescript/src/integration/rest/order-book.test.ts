@@ -5,6 +5,7 @@ import { getConfig } from '../../market-proxy/base/config';
 import { TradeableEntity } from '../../market-proxy/types';
 import { sortBy } from '../../market-proxy/utils/array';
 import { getUserTag } from '../../market-proxy/utils/userTag';
+import { sleep } from '../../market-proxy/utils/time';
 
 describe('[REST] Order Book', () => {
   let api: MarketProxyApi;
@@ -59,6 +60,10 @@ describe('[REST] Order Book', () => {
       timeInForce: 'GTC',
       symbol,
     });
+
+    // ToDo: when MP supports order_updated, wait for order_state = pending -> entered
+
+    sleep(1000);
 
     const newOrderBook = await api.orderbookRest({ symbol, depth: 10 });
 

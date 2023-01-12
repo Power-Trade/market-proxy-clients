@@ -22,6 +22,7 @@ export const placeOrderRest = async (ws: MarketProxyWs, order: OrderRequest) => 
   return {
     ...order,
     orderId: '',
+    reason: response?.order_rejected?.reason,
     state: 'rejected',
     timestamp: response?.order_rejected?.utc_timestamp
       ? parseInt(response.order_rejected.utc_timestamp, 10)
