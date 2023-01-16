@@ -1,4 +1,5 @@
 import { describe, expect, test, beforeAll, afterAll } from '@jest/globals';
+import { spawn } from 'node:child_process';
 
 import getMarketProxyApi, { MarketProxyApi } from '../../market-proxy/api';
 import { getConfig } from '../../market-proxy/base/config';
@@ -6,6 +7,7 @@ import { CancelOrderResponseRaw, OrderAcceptedWsRaw, OrderRequest, TradeableEnti
 import { sleep } from '../../market-proxy/utils/time';
 import { getUserTag } from '../../market-proxy/utils/userTag';
 import { Side } from '../../market-proxy/types';
+import { log } from '../../market-proxy/utils/log';
 
 const getOrderBase = (): OrderRequest => ({
   activeCycles: 1,
@@ -332,4 +334,95 @@ describe('[WS] Cancel All Orders', () => {
       reason: "user_cancelled",
     });
   }, 10000);
+
+  test('pending_cancel on MP<->CPLX reconnection', async () => {
+    if (process.env.SUDO_PASSWORD === undefined) {
+      return // This test is for locally running MP with sudo permission to kill TCP connection
+    }
+    const sudo_password = process.env.SUDO_PASSWORD!
+
+    let orders = await api.cancelAndWait()
+
+    let ordersAccepted: OrderAcceptedWsRaw[] = [];
+    api.onOrderAccepted((e) => ordersAccepted.push(e));
+
+    let ordersCancelled: CancelOrderResponseRaw[] = [];
+    api.onOrderCancel((e) => { if (e.filled_quantity != null) { ordersCancelled.push(e) } });
+
+    expect(orders.length).toEqual(0);
+
+    let waitForAlive = async(cnt: number) => {
+      while(ordersAccepted.length < cnt) {
+        await sleep(50);
+      }
+    }
+
+    // Orders to be placed while MP <-> CPLX is alive
+    let ordersBulk1 = await api.placeBulkOrderWs([
+      { ...getOrderBase() },
+      { ...getOrderBase() },
+    ]);
+    await waitForAlive(2);
+
+    // Orders to be placed just before MP <-> CPLX disconnection
+    let ordersBulk2Await = api.placeBulkOrderWs([
+      { ...getOrderBase() },
+      { ...getOrderBase() },
+    ]);
+
+    // Killing connection MP(Local) <-> CPLX(dev)
+    let tcpkill = spawn(`sudo`, [`-S`, `tcpkill`, `host`, `api.wss.dev.power.trade`], { stdio: 'pipe' })
+    tcpkill.stdin.write(`${sudo_password}\n`);
+    /*tcpkill.stdout.on('data', (data) => {
+      const buf = Buffer.from(data, 'utf-8');
+      log(`tcpkillout: ${buf.toString()}`);
+    });
+    tcpkill.stderr.on('data', (data) => {
+      const buf = Buffer.from(data, 'utf-8');
+      log(`tcpkillerr: ${buf.toString()}`);
+    });*/
+    await sleep(1000)
+    expect(tcpkill.exitCode).toEqual(null);
+
+    // Orders to be placed just after MP <-> CPLX disconnection
+    let ordersBulk3Await = api.placeBulkOrderWs([
+      { ...getOrderBase() },
+      { ...getOrderBase() },
+    ]);
+
+    await sleep(2 * 1000) // Less than heartbeat timeout
+
+    // It should be processed while MP has no connection to CPLX, i.e. should be postponed
+    let cancelAwait = api.cancelAllOpenOrdersWs();
+
+    tcpkill.kill('SIGKILL') // Allow MP to re-establish connection
+    await new Promise( (resolve) => {
+      tcpkill.on('exit', resolve)
+    })
+
+    let ordersBulk2 = await ordersBulk2Await;
+    let ordersBulk3 = await ordersBulk3Await;
+    let cancel = await cancelAwait;
+
+    // Orders to be placed after MP found disconnection, after mass cancel
+    // So they should be the only alive orders after syncing with CPLX
+    while(true) {
+      let orders4 = await api.placeOrderWs(getOrderBase());
+      // MP is in "exchange is down" state...
+      if (orders4.state == 'accepted') {
+        break;
+      }
+      await sleep(50);
+    }
+
+    // If orders4 is accepted, then all previous requests are also completed
+    expect(ordersCancelled.length).toBeGreaterThanOrEqual(4); // All previous orders should be cancelled
+    expect(ordersCancelled.length).toBeLessThanOrEqual(6);    // Orders sent after disconnection might be rejected by gateway
+    expect(ordersAccepted.length).toBeGreaterThanOrEqual(3);  // But some of them might skip "entered" state: pending_new -> pending_cancel -> cancelled
+    expect(ordersAccepted.length).toBeLessThanOrEqual(7);
+
+    orders = await api.fetchOpenOrdersRest();
+    expect(orders.length).toEqual(1);
+
+  }, 90000);
 });
