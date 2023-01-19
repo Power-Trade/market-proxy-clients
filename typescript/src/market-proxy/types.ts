@@ -175,6 +175,7 @@ export type CancelOrderResponseRaw = {
   symbol: string;
   order_id: string;
   client_order_id: string;
+  filled_quantity: number;
   reason: string;
 };
 
@@ -231,6 +232,18 @@ export type OrderDetailsRestRaw = {
   order_state: string;
   cancel_state: string;
   executions: [];
+};
+
+export type OrderAcceptedWsRaw = {
+  utc_timestamp: string;
+  market_id: string;
+  tradeable_entity_id: string;
+  symbol: string;
+  type: string;
+  order_id: string;
+  client_order_id: string;
+  quantity: string;
+  price: string;
 };
 
 export type RefreshRfqInterestRestRaw = {

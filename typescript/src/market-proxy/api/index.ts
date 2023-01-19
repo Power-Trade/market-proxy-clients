@@ -1,7 +1,9 @@
 import MarketProxyWs from '../base/MarketProxyWs';
 import {
+  CancelOrderResponseRaw,
   Config,
   ExecutionRaw,
+  OrderAcceptedWsRaw,
   OrderRequest,
   RfqAddedRaw,
   RfqRemovedRaw,
@@ -146,6 +148,20 @@ export class MarketProxyApi {
     return this.ws.addOnMessageListener({
       callback,
       selector: (event) => event === 'snapshot',
+    });
+  };
+
+  public onOrderAccepted = (callback: (payload: OrderAcceptedWsRaw) => void) => {
+    return this.ws.addOnMessageListener({
+      callback,
+      selector: (event) => event === 'order_accepted',
+    });
+  };
+
+  public onOrderCancel = (callback: (payload: CancelOrderResponseRaw) => void) => {
+    return this.ws.addOnMessageListener({
+      callback,
+      selector: (event) => event === 'cancel_order',
     });
   };
 
