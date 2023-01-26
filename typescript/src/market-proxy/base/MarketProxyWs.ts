@@ -172,8 +172,10 @@ class MarketProxyWs {
   public sendClientOrderIdRequest = (requestName: RequestName, payload: any) => {
     return new Promise<[RequestName, any]>((resolve, reject) => {
       const clientOrderId = payload.client_order_id;
+      const user_tag = payload.user_tag;
 
       this.clientOrderIdHandlers[clientOrderId] = { resolve, reject };
+      this.taggedHandlers[user_tag] = { resolve, reject };
 
       this.ws.send({ [requestName]: payload });
     });

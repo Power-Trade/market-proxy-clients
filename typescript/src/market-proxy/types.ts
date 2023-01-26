@@ -9,7 +9,7 @@ export type Config = {
 
 export type Side = 'buy' | 'sell';
 
-export type RfqTimeInForce = 'GTC' | 'IOC' | 'DAY';
+export type RfqTimeInForce = 'GTC' | 'GTD' | 'IOC' | 'DAY';
 
 export type MarketType = 'firm' | 'rfq';
 
@@ -25,6 +25,7 @@ export type RequestName =
   | 'order_accepted'
   | 'new_bulk_order'
   | 'cancel_all_orders'
+  | 'command_response'
   | 'entities_and_rules_request'
   | 'refresh_interest'
   | 'cancel_order'
@@ -56,6 +57,7 @@ export type Order = {
   state: OrderState;
   legs?: OrderLeg[];
   minimumQuantity?: number;
+  expireTimestamp?: number;
   clientOrderId: string;
 };
 
