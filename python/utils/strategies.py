@@ -118,6 +118,38 @@ BASE_STRATEGIES = [
             {"optionType": "put", "price": "ATM", "ratio": -2},
             {"optionType": "put", "price": "ITM", "ratio": 1},
         ],
+    },
+    {
+        "longName": "Call Spread 1x2",
+        "shortName": "CSpd12",
+        "legs": [
+            {"optionType": "call", "price": "ATM", "ratio": 1},
+            {"optionType": "call", "price": "OTM", "ratio": -2},
+        ],
+    },
+    {
+        "longName": "Call Spread 1x3",
+        "shortName": "CSpd13",
+        "legs": [
+            {"optionType": "call", "price": "ATM", "ratio": 1},
+            {"optionType": "call", "price": "OTM", "ratio": -3},
+        ],
+    },
+    {
+        "longName": "Put Spread 1x2",
+        "shortName": "PSpd12",
+        "legs": [
+            {"optionType": "put", "price": "OTM", "ratio": -2},
+            {"optionType": "put", "price": "ATM", "ratio": 1},
+        ],
+    },
+    {
+        "longName": "Put Spread 1x3",
+        "shortName": "PSpd13",
+        "legs": [
+            {"optionType": "put", "price": "OTM", "ratio": -3},
+            {"optionType": "put", "price": "ATM", "ratio": 1},
+        ],
     }
 ]
 

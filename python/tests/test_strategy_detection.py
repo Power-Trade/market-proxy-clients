@@ -112,6 +112,34 @@ def test_put_butterfly():
     assert s["shortName"] == "PFly"
     assert s["inverted"] == False
 
+def test_call_spread_12():
+    s = get_strategy_name(
+        "BTC-20230428-32000C@-2/BTC-20230428-31000C@1")
+    assert s["longName"] == "Call Spread 1x2"
+    assert s["shortName"] == "CSpd12"
+    assert s["inverted"] == False
+
+def test_call_spread_13():
+    s = get_strategy_name(
+        "BTC-20230428-32000C@-3/BTC-20230428-31000C@1")
+    assert s["longName"] == "Call Spread 1x3"
+    assert s["shortName"] == "CSpd13"
+    assert s["inverted"] == False
+
+def test_put_spread_12():
+    s = get_strategy_name(
+        "BTC-20230428-30000P@-2/BTC-20230428-31000P@1")
+    assert s["longName"] == "Put Spread 1x2"
+    assert s["shortName"] == "PSpd12"
+    assert s["inverted"] == False
+
+def test_put_spread_13():
+    s = get_strategy_name(
+        "BTC-20230428-30000P@-3/BTC-20230428-31000P@1")
+    assert s["longName"] == "Put Spread 1x3"
+    assert s["shortName"] == "PSpd13"
+    assert s["inverted"] == False
+
 
 def test_iron_butterfly():
     s = get_strategy_name(
