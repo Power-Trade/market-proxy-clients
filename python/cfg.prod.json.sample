@@ -1,0 +1,6 @@
+{
+  "api_key": "ENTERPOWERTRADEKEYIDHERE",
+  "private_key": "ENTERPRIVATEKEYHEREINPEMFILEFORMATWITHNEWLINES"
+  "ws_url": "wss://proxy.ptlab.link",
+  "http_url": "https://proxy.ptlab.link"
+}
