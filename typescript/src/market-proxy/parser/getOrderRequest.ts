@@ -14,6 +14,7 @@ export const getOrderRequest = ({
   legs,
   symbol,
   tradeableEntityId,
+  expireTimestamp,
 }: OrderRequest) => {
   const payload: any = {
     market_id: marketType === 'firm' ? '0' : 'none',
@@ -52,6 +53,11 @@ export const getOrderRequest = ({
     delete payload.symbol;
   } else {
     log('order is missing symbol or tid or legs');
+  }
+
+  if (expireTimestamp !== undefined)
+  {
+    payload.expire_timestamp = expireTimestamp.toString()
   }
 
   return payload;

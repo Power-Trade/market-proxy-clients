@@ -21,6 +21,15 @@ export const placeOrderWs = async (ws: MarketProxyWs, order: OrderRequest) => {
     };
   }
 
+  if (responseName === 'command_response') {
+    return {
+      ...order,
+      orderId: '',
+      state: 'rejected',
+      reason: payload.error_text,
+    };
+  }
+
   return {
     ...order,
     orderId: '',
